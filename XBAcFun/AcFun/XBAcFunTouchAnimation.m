@@ -12,8 +12,7 @@
 + (CALayer *)createAnimationAtPoint:(CGPoint)point{
     CALayer * loveLayer = [CALayer layer];
     loveLayer.frame = CGRectMake(point.x, point.y, 18.0, 15.0);
-    loveLayer.contents = (__bridge id _Nullable)([UIImage imageNamed:@"article_like_on"].CGImage);
-    
+    loveLayer.contents = (__bridge id _Nullable)([UIImage imageNamed:@"AcFun_Love_Icon"].CGImage);
     UIBezierPath * bezierPath = [[UIBezierPath alloc]init];
     [bezierPath moveToPoint:CGPointMake(point.x, point.y)];
     [bezierPath addCurveToPoint:CGPointMake(point.x, point.y - 50) controlPoint1:CGPointMake(point.x - 20, point.y - 24.5) controlPoint2:CGPointMake(point.x + 20, point.y - 24.5)];
@@ -35,6 +34,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.16 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [loveLayer removeFromSuperlayer];
     });
+    
     return loveLayer;
 }
 @end

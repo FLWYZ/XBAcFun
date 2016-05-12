@@ -21,6 +21,7 @@
     XBAcFunAcItem * item = [[XBAcFunAcItem alloc]init];
     item.content = self.content;
     item.posterAvatar = self.posterAvatar;
+    item.posterAvatarImage = self.posterAvatarImage;
     item.likeCount = self.likeCount;
     item.acFunCurve = self.acFunCurve;
     item.isPrivateComment = self.isPrivateComment;
