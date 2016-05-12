@@ -35,7 +35,11 @@
     self.backgroundColor = [[UIColor colorWithRGBHex:acItem.acFunBgColorType]colorWithAlphaComponent:0.85];
     self.commentLabel.textColor = acItem.isPrivateComment ? [UIColor colorWithRGBHex:0x85d7ff] : [UIColor whiteColor];
     self.commentLabel.text = acItem.content;
-    self.avatarImageView.image = acItem.posterAvatarImage;
+    if (acItem.posterAvatarImage != nil) {
+        self.avatarImageView.image = acItem.posterAvatarImage;
+    }else if (acItem.posterAvatar != nil && ![acItem.posterAvatar isEqualToString:@""]){
+        self.avatarImageView.image = [UIImage imageNamed:acItem.posterAvatar];
+    }
     return self;
 }
 

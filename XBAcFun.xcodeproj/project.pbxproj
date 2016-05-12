@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		880D2DF81CE450F400998C7D /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2DF71CE450F400998C7D /* TableViewCell.m */; };
+		880D2DFC1CE45ABF00998C7D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 880D2DFB1CE45ABF00998C7D /* Images.xcassets */; };
 		88468A2E1CE338F0001F3AAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A2D1CE338F0001F3AAA /* main.m */; };
 		88468A311CE338F0001F3AAA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A301CE338F0001F3AAA /* AppDelegate.m */; };
 		88468A341CE338F0001F3AAA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A331CE338F0001F3AAA /* ViewController.m */; };
@@ -43,6 +45,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		880D2DF61CE450F400998C7D /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
+		880D2DF71CE450F400998C7D /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
+		880D2DFB1CE45ABF00998C7D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		88468A291CE338F0001F3AAA /* XBAcFun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBAcFun.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88468A2D1CE338F0001F3AAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		88468A2F1CE338F0001F3AAA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -131,8 +136,11 @@
 				88468A301CE338F0001F3AAA /* AppDelegate.m */,
 				88468A321CE338F0001F3AAA /* ViewController.h */,
 				88468A331CE338F0001F3AAA /* ViewController.m */,
+				880D2DF61CE450F400998C7D /* TableViewCell.h */,
+				880D2DF71CE450F400998C7D /* TableViewCell.m */,
 				88468A351CE338F0001F3AAA /* Main.storyboard */,
 				88468A381CE338F0001F3AAA /* Assets.xcassets */,
+				880D2DFB1CE45ABF00998C7D /* Images.xcassets */,
 				88468A3A1CE338F0001F3AAA /* LaunchScreen.storyboard */,
 				88468A3D1CE338F0001F3AAA /* Info.plist */,
 				88468A2C1CE338F0001F3AAA /* Supporting Files */,
@@ -293,6 +301,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				880D2DFC1CE45ABF00998C7D /* Images.xcassets in Resources */,
 				88468A3C1CE338F0001F3AAA /* LaunchScreen.storyboard in Resources */,
 				88468A391CE338F0001F3AAA /* Assets.xcassets in Resources */,
 				88468A371CE338F0001F3AAA /* Main.storyboard in Resources */,
@@ -321,6 +330,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				88468A341CE338F0001F3AAA /* ViewController.m in Sources */,
+				880D2DF81CE450F400998C7D /* TableViewCell.m in Sources */,
 				88468A761CE338FF001F3AAA /* XBAcFunManager.m in Sources */,
 				88468A741CE338FF001F3AAA /* XBAcFunAcSubView.m in Sources */,
 				88468A311CE338F0001F3AAA /* AppDelegate.m in Sources */,
@@ -554,6 +564,7 @@
 				88468A581CE338F0001F3AAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		88468A591CE338F0001F3AAA /* Build configuration list for PBXNativeTarget "XBAcFunTests" */ = {
 			isa = XCConfigurationList;
@@ -562,6 +573,7 @@
 				88468A5B1CE338F0001F3AAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		88468A5C1CE338F0001F3AAA /* Build configuration list for PBXNativeTarget "XBAcFunUITests" */ = {
 			isa = XCConfigurationList;
@@ -570,6 +582,7 @@
 				88468A5E1CE338F0001F3AAA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
