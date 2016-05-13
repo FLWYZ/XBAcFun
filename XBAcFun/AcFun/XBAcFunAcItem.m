@@ -13,6 +13,7 @@
     if (self = [super init]) {
         self.isPrivateComment = NO;
         self.privateCommentHasInserted = NO;
+        self.imageDownloadStatus = XBAcFunImageDownloadStatus_Waiting;
     }
     return self;
 }
@@ -27,6 +28,7 @@
     item.isPrivateComment = self.isPrivateComment;
     item.timeDuration = self.timeDuration;
     item.startPoint = self.startPoint;
+    item.imageDownloadStatus = self.imageDownloadStatus;
     item.privateCommentHasInserted = self.privateCommentHasInserted;
     return item;
 }

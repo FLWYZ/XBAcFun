@@ -20,6 +20,7 @@
 #import "XBAcFunAcSubView.h"
 #import "XBAcFunMessageView.h"
 #import "XBAcFunManager.h"
-
+#import "XBAcFunDownloadImageManager.h"
+#import "UIImageView+XBAcFunExtension.h"
 
 #endif /* XBAcFunCommon_h */

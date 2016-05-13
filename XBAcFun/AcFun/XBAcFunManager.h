@@ -28,6 +28,8 @@
 
 + (void)openCloseAcFun:(BOOL)isOpen currentAcFunManager:(XBAcFunManager *)manager;
 
+- (void)setDownloadingImageArraySize:(NSInteger)size;
+
 /**
  *  dictionary with comment datas : comment content , user avatar , like count
  */

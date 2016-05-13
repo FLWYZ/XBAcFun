@@ -56,6 +56,10 @@ static BOOL isOpenAcFun = YES;
     }
 }
 
+- (void)setDownloadingImageArraySize:(NSInteger)size{
+    self.dataController.sizeOfDownloadingImageArray = size;
+}
+
 - (instancetype)init{
     if (self = [super init]) {
         self.hasLoadAllAcfun = NO;

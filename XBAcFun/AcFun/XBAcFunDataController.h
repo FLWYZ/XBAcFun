@@ -15,6 +15,11 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 
 @property (assign, nonatomic) BOOL isShowingAcFun;
 
+/**
+ *  设置图片缓存区数组的长度
+ */
+@property (assign, nonatomic) NSInteger sizeOfDownloadingImageArray;
+
 - (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval;
 
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> * )comments;
