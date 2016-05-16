@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "XBAcFunCommon.h"
+#import "XBAcFunDownloadImageManager.h"
 
 @interface UIImageView (XBAcFunExtension)
 

@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "XBAcFunCommon.h"
 
-typedef void(^SucceedBlock)(UIImage * downloadImage , NSURL * imageUrl , XBAcFunAcItem * originalItem);
-typedef void(^FailureBlock)(NSError * error , NSURL * imageUrl , XBAcFunAcItem * originalItem);
-
 @interface XBAcFunDownloadImageManager : NSObject
 
 + (XBAcFunDownloadImageManager *)shareManager;

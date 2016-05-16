@@ -25,12 +25,6 @@ typedef NS_ENUM(NSUInteger, XBAcFunCurve) {
     XBAcFunCurve_Top = 3
 };
 
-typedef NS_ENUM(NSUInteger, XBAcFunImageDownloadStatus) {
-    XBAcFunImageDownloadStatus_Waiting,
-    XBAcFunImageDownloadStatus_Downloading,
-    XBAcFunImageDownloadStatus_Finished,
-};
-
 @interface XBAcFunAcItem : NSObject<NSCopying>
 
 @property (copy, nonatomic) NSString           * content;
@@ -47,7 +41,7 @@ typedef NS_ENUM(NSUInteger, XBAcFunImageDownloadStatus) {
 @property (assign, nonatomic) NSTimeInterval             timeDuration;
 @property (assign, nonatomic) CGPoint                    startPoint;
 @property (assign, nonatomic) BOOL                       privateCommentHasInserted;
-@property (assign, nonatomic) XBAcFunImageDownloadStatus imageDownloadStatus;
+@property (assign, nonatomic) NSInteger                  imageDownloadTimes;
 
 + (XBAcFunAcItem *)acFunItemFromDictionary:(NSDictionary *)dic;
 

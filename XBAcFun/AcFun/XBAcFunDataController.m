@@ -16,19 +16,39 @@
 @property (assign, nonatomic) NSTimeInterval avarageUpdateTimeInterval;
 
 //已经飘出的弹幕总数
-@property (assign, nonatomic) NSInteger numberOfHasDisplayedAcFunItem;
+@property (assign, nonatomic) NSInteger numberOfNetworkComments;
 
 @property (strong, nonatomic) NSMutableArray * acFunTimeIntervalArray;
 
-/**
- *  保存 2 个数组，一个是从网络上传过来的评论（弹幕）； 一个是用户自己的评论 —— 
- *  由于用户自己的评论不需要加载头像，而且，颜色，弹道都特殊。所以分开存储，以达到优化查询的目的
- */
-@property (strong, nonatomic) NSMutableArray * acFunItemArray_NetworkComment;
+/*
+ since the total comment is increating while downloading the comment from the network 
+ so I need four arrays
 
+ -> acFunItemArray_PrivateComment —— store the comments launched by user until user leave the current viewcontroller
+ -> acfunItemArray_InDownloadingImage —— store the comment which is downloading or has downloaded image but hasn't showed
+ -> acFunItemArray_WaitDownloadImage —— store the comment whose image need to be downloaded
+ -> acfunItemArray_FinishedDownloadImage —— store the comment finish download image
+*/
+
+/**
+ *  comments launched by user
+ */
 @property (strong, nonatomic) NSMutableArray * acFunItemArray_PrivateComment;
 
+/**
+ *  comments wait to download image
+ */
+@property (strong, nonatomic) NSMutableArray * acFunItemArray_WaitDownloadImage;
+
+/**
+ *  downloading image comments
+ */
 @property (strong, nonatomic) NSMutableArray * acfunItemArray_InDownloadingImage;
+
+/**
+ *  finished download image array
+ */
+@property (strong, nonatomic) NSMutableArray * acfunItemArray_FinishedDownloadImage;
 
 @end
 
@@ -60,7 +80,7 @@
 
 - (BOOL)acFunIsReady{
     BOOL isReady = NO;
-    if (self.acFunItemArray_NetworkComment.count > 0 || self.acFunItemArray_PrivateComment.count > 0) {
+    if (self.numberOfNetworkComments > 0 || self.acFunItemArray_PrivateComment.count > 0) {
         if (self.isShowingAcFun == NO) {//还未开始飘弹幕状态
             isReady = YES;
         }else{//正在飘弹幕状态
@@ -83,7 +103,7 @@
         if (aCurve == XBAcFunCurve_Top) {
             return timeInterval.index < self.acFunItemArray_PrivateComment.count;
         }else{
-            return [self numberOfDisplayedNetworkAcFunItem] >= self.acFunItemArray_NetworkComment.count;
+            return [self numberOfDisplayedNetworkAcFunItem] < self.numberOfNetworkComments;
         }
     }
     return NO;
@@ -91,7 +111,7 @@
 
 - (BOOL)hasShowAllAcFuns{
     NSInteger count = [self numberOfDisplayedNetworkAcFunItem] + [self numberOfDisplayedPrivateAcFunItem];
-    return count >= (self.acFunItemArray_NetworkComment.count + self.acFunItemArray_PrivateComment.count) && count != 0;
+    return count >= (self.numberOfNetworkComments + self.acFunItemArray_PrivateComment.count) && count != 0;
 }
 
 - (void)updateAllCurveTimeInterval{
@@ -119,13 +139,12 @@
         XBAcFunTimeInterval * timeInterval = self.acFunTimeIntervalArray[onCurve];
         XBAcFunAcItem * item = nil;
         if (onCurve == XBAcFunCurve_Top) {
-            item = [[NSArray arrayWithArray:self.acFunItemArray_PrivateComment][timeInterval.index] copy];
+            item = [NSArray arrayWithArray:self.acFunItemArray_PrivateComment][timeInterval.index];
         }else{
-            item = [self.acfunItemArray_InDownloadingImage[0] copy];
-            
-            [self.acfunItemArray_InDownloadingImage removeObjectAtIndex:0];
-            
-            item.acFunCurve = onCurve;
+            if (self.acfunItemArray_FinishedDownloadImage.count > [self numberOfDisplayedNetworkAcFunItem]) {
+                item = [self.acfunItemArray_FinishedDownloadImage[[self numberOfDisplayedNetworkAcFunItem]] copy];
+                item.acFunCurve = onCurve;
+            }
             switch (onCurve) {
                 case XBAcFunCurve_One:
                     item.startPoint = CGPointMake(kScreenWidth, 44.0);
@@ -140,14 +159,16 @@
                     break;
             }
         }
-        if (operation) {
-            operation(item);
+        if (item != nil) {
+            if (operation) {
+                operation(item);
+            }
+            timeInterval.index++;
+            timeInterval.lastAcFunWidth = [item.content sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}].width + 40.0;
+            timeInterval.lastAcFunAnimationDuration = item.timeDuration;
+            [self clearTimeIntervalOnCurve:onCurve];
+            item.timeDuration = [self animationDuration:item.content];
         }
-        timeInterval.index++;
-        timeInterval.lastAcFunWidth = [item.content sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}].width + 40.0;
-        timeInterval.lastAcFunAnimationDuration = item.timeDuration;
-        [self clearTimeIntervalOnCurve:onCurve];
-        item.timeDuration = [self animationDuration:item.content];
     }
 }
 
@@ -159,10 +180,12 @@
 }
 
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> *)comments{
+    self.numberOfNetworkComments += comments.count;
     for (NSInteger index = 0 ; index < comments.count ; index++) {
         XBAcFunAcItem * item = comments[index];
         item.timeDuration = [self animationDuration:item.content];
-        [self.acFunItemArray_NetworkComment addObject:item];
+        [self.acFunItemArray_WaitDownloadImage addObject:item];
+        [self bringAcFunItemToDownloadingArray];
     }
 }
 
@@ -210,6 +233,34 @@
 
 #pragma mark - private method
 
+- (void)bringAcFunItemToDownloadingArray{
+    @synchronized (self) {
+        NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
+        buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
+        if (buffer > 0) {
+            NSRange range = NSMakeRange(0, buffer);
+            NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
+            [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
+            [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
+            for (XBAcFunAcItem * item in subArray) {
+                if (item.imageDownloadTimes > 2) {
+                    [self.acfunItemArray_FinishedDownloadImage addObject:item];
+                    [self.acfunItemArray_InDownloadingImage removeObject:item];
+                }else{
+                    [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                        [self.acfunItemArray_FinishedDownloadImage addObject:item];
+                        [self.acfunItemArray_InDownloadingImage removeObject:item];
+                        [self bringAcFunItemToDownloadingArray];
+                    } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                        item.imageDownloadTimes++;
+                        [self.acFunItemArray_WaitDownloadImage addObject:item];
+                    }];
+                }
+            }
+        }
+    }
+}
+
 /**
  *  已经 展示过、正在展示的，由网络加载的评论（弹幕）
  */
@@ -230,17 +281,6 @@
  */
 - (NSInteger)numberOfDisplayedPrivateAcFunItem{
     return ((XBAcFunTimeInterval *)self.acFunTimeIntervalArray[XBAcFunCurve_Top]).index;
-}
-
-/**
- *  -> 将首元素删除
- *  -> 从 acFunItemArray_NetworkComment 获得元素，该元素，应当是首元素
- *  -> 图片下载完成后，应该将该元素，抛到 acFunItemArray_NetworkComment 的末尾，
-       同时，该元素，位于 acfunItemArray_InDownloadingImage 的首位
-       然后要设置 XBAcFunImageDownloadStatus 图片加载状态
- */
-- (void)bringAcFunItemIntoDownloadingArray{
-    [self.acfunItemArray_InDownloadingImage removeObjectAtIndex:0];
 }
 
 - (void)operateTimeIntervalOnCurve:(XBAcFunCurve)aCurve isUpdate:(BOOL)isUpdate{
@@ -274,13 +314,6 @@
 
 #pragma mark - setter / getter
 
-- (NSMutableArray *)acFunItemArray_NetworkComment{
-    if (_acFunItemArray_NetworkComment == nil) {
-        _acFunItemArray_NetworkComment = [NSMutableArray arrayWithCapacity:200];
-    }
-    return _acFunItemArray_NetworkComment;
-}
-
 - (NSMutableArray *)acFunItemArray_PrivateComment{
     if (_acFunItemArray_PrivateComment == nil) {
         _acFunItemArray_PrivateComment = [NSMutableArray arrayWithCapacity:20];
@@ -293,6 +326,20 @@
         _acfunItemArray_InDownloadingImage = [NSMutableArray arrayWithCapacity:20];
     }
     return _acfunItemArray_InDownloadingImage;
+}
+
+- (NSMutableArray *)acFunItemArray_WaitDownloadImage{
+    if (_acFunItemArray_WaitDownloadImage == nil) {
+        _acFunItemArray_WaitDownloadImage = [NSMutableArray arrayWithCapacity:20];
+    }
+    return _acFunItemArray_WaitDownloadImage;
+}
+
+- (NSMutableArray *)acfunItemArray_FinishedDownloadImage{
+    if (_acfunItemArray_FinishedDownloadImage == nil) {
+        _acfunItemArray_FinishedDownloadImage = [NSMutableArray arrayWithCapacity:20];
+    }
+    return _acfunItemArray_FinishedDownloadImage;
 }
 
 @end
