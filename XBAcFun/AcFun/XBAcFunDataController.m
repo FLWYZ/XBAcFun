@@ -97,6 +97,13 @@
             [self updateTimeIntervalOnCurve:aCurve];
             return NO;
         }else{
+            if (aCurve == XBAcFunCurve_Top) {
+                if (self.acFunItemArray_PrivateComment.count == 0) {
+                    return NO;
+                }else if (timeInterval.index > self.acFunItemArray_PrivateComment.count){
+                    return NO;
+                }
+            }
             return YES;
         }
     }else{
@@ -141,8 +148,9 @@
         if (onCurve == XBAcFunCurve_Top) {
             item = [NSArray arrayWithArray:self.acFunItemArray_PrivateComment][timeInterval.index];
         }else{
-            if (self.acfunItemArray_FinishedDownloadImage.count > [self numberOfDisplayedNetworkAcFunItem]) {
-                item = [self.acfunItemArray_FinishedDownloadImage[[self numberOfDisplayedNetworkAcFunItem]] copy];
+            NSInteger launchIndex = [self numberOfDisplayedNetworkAcFunItem];
+            if (self.acfunItemArray_FinishedDownloadImage.count > launchIndex) {
+                item = [self.acfunItemArray_FinishedDownloadImage[launchIndex] copy];
                 item.acFunCurve = onCurve;
             }
             switch (onCurve) {
@@ -164,10 +172,10 @@
                 operation(item);
             }
             timeInterval.index++;
-            timeInterval.lastAcFunWidth = [item.content sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}].width + 40.0;
+            timeInterval.lastAcFunWidth = item.contentWidth.floatValue;
             timeInterval.lastAcFunAnimationDuration = item.timeDuration;
             [self clearTimeIntervalOnCurve:onCurve];
-            item.timeDuration = [self animationDuration:item.content];
+            item.timeDuration = [self animationDuration:item];
         }
     }
 }
@@ -183,7 +191,7 @@
     self.numberOfNetworkComments += comments.count;
     for (NSInteger index = 0 ; index < comments.count ; index++) {
         XBAcFunAcItem * item = comments[index];
-        item.timeDuration = [self animationDuration:item.content];
+        item.timeDuration = [self animationDuration:item];
         [self.acFunItemArray_WaitDownloadImage addObject:item];
         [self bringAcFunItemToDownloadingArray];
     }
@@ -197,7 +205,7 @@
     item.acFunCurve = XBAcFunCurve_Top;
     item.isPrivateComment = YES;
     item.startPoint = CGPointMake(kScreenWidth, 12.0);
-    item.timeDuration = [self animationDuration:comment];
+    item.timeDuration = [self animationDuration:item];
     
     if (self.isShowingAcFun) {
         XBAcFunTimeInterval * timeInterval = self.acFunTimeIntervalArray[XBAcFunCurve_Top];
@@ -237,24 +245,30 @@
     @synchronized (self) {
         NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
         buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
+        void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
+            [self.acfunItemArray_FinishedDownloadImage addObject:item];
+            [self.acfunItemArray_InDownloadingImage removeObject:item];
+            [self bringAcFunItemToDownloadingArray];
+        };
         if (buffer > 0) {
             NSRange range = NSMakeRange(0, buffer);
             NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
             [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
             [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
             for (XBAcFunAcItem * item in subArray) {
-                if (item.imageDownloadTimes > 2) {
-                    [self.acfunItemArray_FinishedDownloadImage addObject:item];
-                    [self.acfunItemArray_InDownloadingImage removeObject:item];
+                if (item.content != nil && ![item.content isEqualToString:@""]) {
+                    if (item.imageDownloadTimes > 2) {
+                        operationBlock(item);
+                    }else{
+                        [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                            operationBlock(item);
+                        } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                            item.imageDownloadTimes++;
+                            [self.acFunItemArray_WaitDownloadImage addObject:item];
+                        }];
+                    }
                 }else{
-                    [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                        [self.acfunItemArray_FinishedDownloadImage addObject:item];
-                        [self.acfunItemArray_InDownloadingImage removeObject:item];
-                        [self bringAcFunItemToDownloadingArray];
-                    } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                        item.imageDownloadTimes++;
-                        [self.acFunItemArray_WaitDownloadImage addObject:item];
-                    }];
+                    operationBlock(item);
                 }
             }
         }
@@ -291,15 +305,15 @@
         }else{
             timeInterval.passedTimeInterval = 0;
             CGFloat animationSpeed = floor((timeInterval.lastAcFunWidth + kScreenWidth) / timeInterval.lastAcFunAnimationDuration);
-            CGFloat newDistance = (timeInterval.lastAcFunWidth + arc4random_uniform(500) / 100.0 + 10.0);
-            timeInterval.timeInterval = ceil(newDistance / animationSpeed);
+            CGFloat newDistance = (timeInterval.lastAcFunWidth + 25.0 + arc4random_uniform(500) / 100.0);
+            timeInterval.timeInterval = newDistance / animationSpeed;
         }
     }
 }
 
 - (void)initAcFunTimeIntervalArray{
     _acFunTimeIntervalArray = nil;
-    _acFunTimeIntervalArray = [NSMutableArray arrayWithCapacity:20];
+    _acFunTimeIntervalArray = [NSMutableArray arrayWithCapacity:4];
     for (NSInteger index = XBAcFunCurve_One; index <= XBAcFunCurve_Top; index++) {
         XBAcFunTimeInterval * timeIntercal = [[XBAcFunTimeInterval alloc]init];
         timeIntercal.timeInterval = arc4random_uniform(1200) / 1000.0 + self.avarageUpdateTimeInterval * 10;
@@ -307,9 +321,9 @@
     }
 }
 
-- (NSTimeInterval)animationDuration:(NSString *)commentContent{
-    CGFloat contentWidth = [commentContent sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}].width + 40.0 + kScreenWidth;
-    return (contentWidth / kScreenWidth + arc4random_uniform(600) / 1000.0) * 4.0;
+- (NSTimeInterval)animationDuration:(XBAcFunAcItem *)acfunItem{
+    CGFloat contentWidth = acfunItem.contentWidth.floatValue + kScreenWidth;
+    return (contentWidth / kScreenWidth + arc4random_uniform(100) / 1000.0) * 4.3;
 }
 
 #pragma mark - setter / getter

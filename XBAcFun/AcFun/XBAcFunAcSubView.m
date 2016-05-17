@@ -38,7 +38,7 @@
     if (acItem.posterAvatarImage != nil) {
         self.avatarImageView.image = acItem.posterAvatarImage;
     }else if (acItem.posterAvatar != nil && ![acItem.posterAvatar isEqualToString:@""]){
-        self.avatarImageView.image = [UIImage imageNamed:acItem.posterAvatar];
+        [self.avatarImageView XBAcFunSetimage:acItem succeedBlock:nil faliureBlock:nil];
     }
     return self;
 }

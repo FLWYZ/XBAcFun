@@ -36,12 +36,12 @@ typedef NS_ENUM(NSUInteger, XBAcFunCurve) {
 /**
  *  可设置的
  */
-@property (assign, nonatomic) XBAcFunCurve               acFunCurve;
-@property (assign, nonatomic) BOOL                       isPrivateComment;
-@property (assign, nonatomic) NSTimeInterval             timeDuration;
-@property (assign, nonatomic) CGPoint                    startPoint;
-@property (assign, nonatomic) BOOL                       privateCommentHasInserted;
-@property (assign, nonatomic) NSInteger                  imageDownloadTimes;
+@property (assign, nonatomic) XBAcFunCurve        acFunCurve;
+@property (assign, nonatomic) BOOL                isPrivateComment;
+@property (assign, nonatomic) NSTimeInterval      timeDuration;
+@property (assign, nonatomic) CGPoint             startPoint;
+@property (assign, nonatomic) NSInteger           imageDownloadTimes;
+@property (copy,   nonatomic) NSNumber            * contentWidth;
 
 + (XBAcFunAcItem *)acFunItemFromDictionary:(NSDictionary *)dic;
 
