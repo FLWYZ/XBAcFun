@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "XBAcFunCommon.h"
 
 @interface AppDelegate ()
 
@@ -16,7 +17,26 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    NSMutableArray * array = [NSMutableArray arrayWithCapacity:20];
+    
+    for (NSInteger index = 0; index < 20; index++) {
+        [array addObject:@(index)];
+    }
+    
+    NSLog(@"%@",array);
+    
+    
+    NSNumber * number = array.firstObject;
+    
+    [array removeObjectAtIndex:0];
+    
+    NSLog(@"-------- %@",array);
+    
+    [array addObject:number];
+    
+    NSLog(@"+++++++ %@",array);
+    
     return YES;
 }
 

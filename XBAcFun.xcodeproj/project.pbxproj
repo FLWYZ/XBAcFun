@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		880D2DF81CE450F400998C7D /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2DF71CE450F400998C7D /* TableViewCell.m */; };
 		880D2DFC1CE45ABF00998C7D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 880D2DFB1CE45ABF00998C7D /* Images.xcassets */; };
+		880D2DFF1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2DFE1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m */; };
+		880D2E021CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2E011CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m */; };
 		88468A2E1CE338F0001F3AAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A2D1CE338F0001F3AAA /* main.m */; };
 		88468A311CE338F0001F3AAA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A301CE338F0001F3AAA /* AppDelegate.m */; };
 		88468A341CE338F0001F3AAA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A331CE338F0001F3AAA /* ViewController.m */; };
@@ -48,6 +50,10 @@
 		880D2DF61CE450F400998C7D /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		880D2DF71CE450F400998C7D /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		880D2DFB1CE45ABF00998C7D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		880D2DFD1CE5A63A00998C7D /* XBAcFunDownloadImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunDownloadImageManager.h; sourceTree = "<group>"; };
+		880D2DFE1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunDownloadImageManager.m; sourceTree = "<group>"; };
+		880D2E001CE5BE7500998C7D /* UIImageView+XBAcFunExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+XBAcFunExtension.h"; sourceTree = "<group>"; };
+		880D2E011CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XBAcFunExtension.m"; sourceTree = "<group>"; };
 		88468A291CE338F0001F3AAA /* XBAcFun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBAcFun.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88468A2D1CE338F0001F3AAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		88468A2F1CE338F0001F3AAA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -188,12 +194,16 @@
 				88468A681CE338FF001F3AAA /* XBAcFunCommon.h */,
 				88468A691CE338FF001F3AAA /* XBAcFunDataController.h */,
 				88468A6A1CE338FF001F3AAA /* XBAcFunDataController.m */,
+				880D2DFD1CE5A63A00998C7D /* XBAcFunDownloadImageManager.h */,
+				880D2DFE1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m */,
 				88468A6B1CE338FF001F3AAA /* XBAcFunManager.h */,
 				88468A6C1CE338FF001F3AAA /* XBAcFunManager.m */,
 				88468A6D1CE338FF001F3AAA /* XBAcFunMessageView.h */,
 				88468A6E1CE338FF001F3AAA /* XBAcFunMessageView.m */,
 				88468A6F1CE338FF001F3AAA /* XBAcFunTouchAnimation.h */,
 				88468A701CE338FF001F3AAA /* XBAcFunTouchAnimation.m */,
+				880D2E001CE5BE7500998C7D /* UIImageView+XBAcFunExtension.h */,
+				880D2E011CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m */,
 			);
 			path = AcFun;
 			sourceTree = "<group>";
@@ -331,6 +341,7 @@
 			files = (
 				88468A341CE338F0001F3AAA /* ViewController.m in Sources */,
 				880D2DF81CE450F400998C7D /* TableViewCell.m in Sources */,
+				880D2DFF1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m in Sources */,
 				88468A761CE338FF001F3AAA /* XBAcFunManager.m in Sources */,
 				88468A741CE338FF001F3AAA /* XBAcFunAcSubView.m in Sources */,
 				88468A311CE338F0001F3AAA /* AppDelegate.m in Sources */,
@@ -338,6 +349,7 @@
 				88468A731CE338FF001F3AAA /* XBAcFunAcItem.m in Sources */,
 				88468A2E1CE338F0001F3AAA /* main.m in Sources */,
 				88468A711CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m in Sources */,
+				880D2E021CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m in Sources */,
 				88468A721CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.m in Sources */,
 				88468A781CE338FF001F3AAA /* XBAcFunTouchAnimation.m in Sources */,
 				88468A751CE338FF001F3AAA /* XBAcFunDataController.m in Sources */,

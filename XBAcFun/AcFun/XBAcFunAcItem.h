@@ -27,24 +27,21 @@ typedef NS_ENUM(NSUInteger, XBAcFunCurve) {
 
 @interface XBAcFunAcItem : NSObject<NSCopying>
 
-@property (copy, nonatomic) NSString * content;
-@property (copy, nonatomic) NSString * posterAvatar;
-@property (copy, nonatomic) UIImage * posterAvatarImage;
-@property (copy, nonatomic) NSString * likeCount;
-@property NSTimeInterval creatTime;// for sort
-
-/**
- *  根据 good_num 推算出来的
- */
+@property (copy, nonatomic) NSString           * content;
+@property (copy, nonatomic) NSString           * posterAvatar;
+@property (copy, nonatomic) UIImage            * posterAvatarImage;
+@property (copy, nonatomic) NSString           * likeCount;
+@property (assign, nonatomic) NSTimeInterval     creatTime;// for sort
 @property (assign, nonatomic) XBAcFunBgColorType acFunBgColorType;
 /**
- *  随机分配的
+ *  可设置的
  */
-@property (assign, nonatomic) XBAcFunCurve acFunCurve;
-@property (assign, nonatomic) BOOL isPrivateComment;
-@property (assign, nonatomic) NSTimeInterval timeDuration;
-@property (assign, nonatomic) CGPoint startPoint;
-@property (assign, nonatomic) BOOL privateCommentHasInserted;
+@property (assign, nonatomic) XBAcFunCurve        acFunCurve;
+@property (assign, nonatomic) BOOL                isPrivateComment;
+@property (assign, nonatomic) NSTimeInterval      timeDuration;
+@property (assign, nonatomic) CGPoint             startPoint;
+@property (assign, nonatomic) NSInteger           imageDownloadTimes;
+@property (copy,   nonatomic) NSNumber            * contentWidth;
 
 + (XBAcFunAcItem *)acFunItemFromDictionary:(NSDictionary *)dic;
 
@@ -57,7 +54,7 @@ typedef NS_ENUM(NSUInteger, XBAcFunCurve) {
 
 @property (assign, nonatomic) NSTimeInterval timeInterval;
 @property (assign, nonatomic) NSTimeInterval passedTimeInterval;
-@property (assign, nonatomic) NSInteger index;
+@property (assign, nonatomic) NSInteger      index;
 @property (assign, nonatomic) NSTimeInterval lastAcFunAnimationDuration;
-@property (assign, nonatomic) CGFloat lastAcFunWidth;
+@property (assign, nonatomic) CGFloat        lastAcFunWidth;
 @end

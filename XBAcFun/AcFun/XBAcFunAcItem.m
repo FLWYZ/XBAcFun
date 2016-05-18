@@ -12,7 +12,7 @@
 - (instancetype)init{
     if (self = [super init]) {
         self.isPrivateComment = NO;
-        self.privateCommentHasInserted = NO;
+        self.imageDownloadTimes = 0;
     }
     return self;
 }
@@ -27,7 +27,7 @@
     item.isPrivateComment = self.isPrivateComment;
     item.timeDuration = self.timeDuration;
     item.startPoint = self.startPoint;
-    item.privateCommentHasInserted = self.privateCommentHasInserted;
+    item.imageDownloadTimes = self.imageDownloadTimes;
     return item;
 }
 
@@ -43,6 +43,23 @@
         return XBAcFunBgColorType_Top;
     }
     return XBAcFunBgColorType_Primary;
+}
+
+- (NSNumber *)contentWidth{
+    if (_contentWidth == nil) {
+        @try {
+            _contentWidth = @([_content sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]}].width + 40.0);
+        } @catch (NSException *exception) {
+            
+        } @finally {
+            
+        }
+    }
+    return _contentWidth;
+}
+
+- (NSString *)content{
+    return [_content stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
 
 + (XBAcFunAcItem *)acFunItemFromDictionary:(NSDictionary *)dic{

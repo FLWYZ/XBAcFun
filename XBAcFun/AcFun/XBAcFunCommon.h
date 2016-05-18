@@ -12,6 +12,13 @@
 #define kScreenWidth  [UIScreen mainScreen].bounds.size.width
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 
+#import <UIKit/UIKit.h>
+
+@class XBAcFunAcItem;
+
+typedef void(^SucceedBlock)(UIImage * downloadImage , NSURL * imageUrl , XBAcFunAcItem * originalItem);
+typedef void(^FailureBlock)(NSError * error , NSURL * imageUrl , XBAcFunAcItem * originalItem);
+
 #import "XBAcFunAcItem.h"
 #import "UIColor+XBAcFunUIColorExtension.h"
 #import "UIView+XBAcFunUIViewExtension.h"
@@ -20,6 +27,9 @@
 #import "XBAcFunAcSubView.h"
 #import "XBAcFunMessageView.h"
 #import "XBAcFunManager.h"
+#import "XBAcFunDownloadImageManager.h"
+#import "UIImageView+XBAcFunExtension.h"
+
 
 
 #endif /* XBAcFunCommon_h */

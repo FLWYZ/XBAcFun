@@ -15,6 +15,11 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 
 @property (assign, nonatomic) BOOL isShowingAcFun;
 
+/**
+ *  设置图片缓存区数组的长度
+ */
+@property (assign, nonatomic) NSInteger sizeOfDownloadingImageArray;
+
 - (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval;
 
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> * )comments;
@@ -22,12 +27,15 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 - (void)resetConditions;
 
 /**
- *  所有的弹道上，是不是有可以飘 的弹幕
+ *  控制发射弹幕扳机，看是不是仍有弹幕没有发射
  */
 - (BOOL)acFunIsReady;
 
 - (BOOL)couldShowAcFun;
 
+/**
+ *  该弹道是否可以发射弹幕 （仅仅表示，该弹道上是否可以飘弹幕，不表示该弹道上已经准备好了弹幕）
+ */
 - (BOOL)couldShowAcFunOnCurve:(XBAcFunCurve)aCurve;
 
 - (BOOL)hasShowAllAcFuns;
