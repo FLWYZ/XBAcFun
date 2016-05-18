@@ -100,7 +100,7 @@
             if (aCurve == XBAcFunCurve_Top) {
                 if (self.acFunItemArray_PrivateComment.count == 0) {
                     return NO;
-                }else if (timeInterval.index > self.acFunItemArray_PrivateComment.count){
+                }else if (timeInterval.index >= self.acFunItemArray_PrivateComment.count){
                     return NO;
                 }
             }
@@ -193,6 +193,8 @@
         XBAcFunAcItem * item = comments[index];
         item.timeDuration = [self animationDuration:item];
         [self.acFunItemArray_WaitDownloadImage addObject:item];
+    }
+    if (self.acfunItemArray_InDownloadingImage.count == 0) {
         [self bringAcFunItemToDownloadingArray];
     }
 }
@@ -242,37 +244,38 @@
 #pragma mark - private method
 
 - (void)bringAcFunItemToDownloadingArray{
-    @synchronized (self) {
-        NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
-        buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
-        void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
-            [self.acfunItemArray_FinishedDownloadImage addObject:item];
-            [self.acfunItemArray_InDownloadingImage removeObject:item];
-            [self bringAcFunItemToDownloadingArray];
-        };
-        if (buffer > 0) {
-            NSRange range = NSMakeRange(0, buffer);
-            NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
-            [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
-            [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
-            for (XBAcFunAcItem * item in subArray) {
-                if (item.content != nil && ![item.content isEqualToString:@""]) {
-                    if (item.imageDownloadTimes > 2) {
-                        operationBlock(item);
-                    }else{
-                        [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                            operationBlock(item);
-                        } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                            item.imageDownloadTimes++;
-                            [self.acFunItemArray_WaitDownloadImage addObject:item];
-                        }];
-                    }
-                }else{
+    dispatch_semaphore_t semaphore_t = dispatch_semaphore_create(1);
+    dispatch_semaphore_wait(semaphore_t, DISPATCH_TIME_FOREVER);
+    NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
+    buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
+    void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
+        [self.acfunItemArray_FinishedDownloadImage addObject:item];
+        [self.acfunItemArray_InDownloadingImage removeObject:item];
+        [self bringAcFunItemToDownloadingArray];
+    };
+    if (buffer > 0) {
+        NSRange range = NSMakeRange(0, buffer);
+        NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
+        [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
+        [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
+        for (XBAcFunAcItem * item in subArray) {
+            if (item.content != nil && ![item.content isEqualToString:@""]) {
+                if (item.imageDownloadTimes > 2) {
                     operationBlock(item);
+                }else{
+                    [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                        operationBlock(item);
+                    } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                        item.imageDownloadTimes++;
+                        [self.acFunItemArray_WaitDownloadImage addObject:item];
+                    }];
                 }
+            }else{
+                operationBlock(item);
             }
         }
     }
+    dispatch_semaphore_signal(semaphore_t);
 }
 
 /**
@@ -298,17 +301,18 @@
 }
 
 - (void)operateTimeIntervalOnCurve:(XBAcFunCurve)aCurve isUpdate:(BOOL)isUpdate{
-    @synchronized (self) {
-        XBAcFunTimeInterval * timeInterval = self.acFunTimeIntervalArray[aCurve];
-        if (isUpdate) {
-            timeInterval.passedTimeInterval += self.avarageUpdateTimeInterval;
-        }else{
-            timeInterval.passedTimeInterval = 0;
-            CGFloat animationSpeed = floor((timeInterval.lastAcFunWidth + kScreenWidth) / timeInterval.lastAcFunAnimationDuration);
-            CGFloat newDistance = (timeInterval.lastAcFunWidth + 25.0 + arc4random_uniform(500) / 100.0);
-            timeInterval.timeInterval = newDistance / animationSpeed;
-        }
+    dispatch_semaphore_t semaphore_t = dispatch_semaphore_create(1);
+    dispatch_semaphore_wait(semaphore_t, DISPATCH_TIME_FOREVER);
+    XBAcFunTimeInterval * timeInterval = self.acFunTimeIntervalArray[aCurve];
+    if (isUpdate) {
+        timeInterval.passedTimeInterval += self.avarageUpdateTimeInterval;
+    }else{
+        timeInterval.passedTimeInterval = 0;
+        CGFloat animationSpeed = floor((timeInterval.lastAcFunWidth + kScreenWidth) / timeInterval.lastAcFunAnimationDuration);
+        CGFloat newDistance = (timeInterval.lastAcFunWidth + 25.0 + arc4random_uniform(500) / 100.0);
+        timeInterval.timeInterval = newDistance / animationSpeed;
     }
+    dispatch_semaphore_signal(semaphore_t);
 }
 
 - (void)initAcFunTimeIntervalArray{
