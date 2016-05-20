@@ -9,18 +9,60 @@
 #import <Foundation/Foundation.h>
 #import "XBAcFunCommon.h"
 
+@protocol XBAcFunManagerDelegate <NSObject>
+
+/**
+ *  well you can use your custom view to take place of my xbacfunsubview
+ *  so that you can face your business
+ *  the acfunItem has param —— isPrivateComment , isFirstTimeDisplay, so you can do the different treatment
+ *  important important —— the custom view you set must be the 
+ */
+- (UIView *)customAcFunSubView:(XBAcFunAcItem *)acfunItem;
+
+/**
+ *  defaultly I just remove the acfun subview when the acfun is disappeared 
+ *  and with this delegate method you can set your custom behaviour
+ *  you can set the disappear animation or other behaviour
+ *  important important : I will remove the acfunview from the contain array whether or not
+ *  you set the custom behaviour
+ */
+- (void)customAcfunDisappearBehaviour:(XBAcFunAcItem *)acfunItem acfunView:(UIView *)acfunView;
+
+/**
+ *  the custom behaviour when you touch the acfunsubview which is displaying
+ *  if you set the custom view the method is useless and you should override the touchbegin method in your custom view
+ */
+- (void)customTouchAcFunViewBehaviour:(XBAcFunAcItem *)acfunItem;
+
+@end
+
 @interface XBAcFunManager : NSObject
+
+/**
+ * you can use the block or the delegate by yourself , but when you set both of them , 
+ * I will run the block because I like the block more than delegate
+ */
+@property (weak, nonatomic) id<XBAcFunManagerDelegate> delegate;
+
+@property (copy, nonatomic) UIView * (^customAcFunSubViewBlock) (XBAcFunAcItem * acfunItem);
+
+@property (copy, nonatomic) void (^customAcfunDisappearBehaviourBlock)(XBAcFunAcItem * acfunItem,UIView * acfunView);
+
+@property (copy, nonatomic) TouchAcFunBlock touchAcFunBlock;
 
 @property (assign, nonatomic) CGFloat currentBaseOriginY;
 
 @property (weak, nonatomic) UIView * belowView;
 
 /**
+ *  to set the acfun custom params
+ */
+@property (strong, nonatomic) XBAcFunCustomParam * acfunCustomParamMaker;
+
+/**
  *  determine that XBAcFunManager has load all acfun from network
  */
 @property (assign, nonatomic) BOOL hasLoadAllAcfun;
-
-@property (copy, nonatomic) TouchAcFunBlock touchAcFunBlock;
 
 + (BOOL)isShowAcFun;
 

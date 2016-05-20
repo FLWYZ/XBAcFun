@@ -27,20 +27,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.textField.layer.borderColor = [[UIColor grayColor]colorWithAlphaComponent:0.45].CGColor;
+    self.textField.layer.borderWidth = 1.0f;
+    self.textField.layer.cornerRadius = 5.0f;
     
-   
-    
-    NSData * data = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath: [[((NSString *)NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject) stringByAppendingPathComponent:@"XBAcFunImageDownloadFile"]stringByAppendingPathComponent:@"539906231227593855"]]];
-    
-    self.bgImage.image = [UIImage imageWithData:data];
-    
-    
-//    self.textField.layer.borderColor = [[UIColor grayColor]colorWithAlphaComponent:0.45].CGColor;
-//    self.textField.layer.borderWidth = 1.0f;
-//    self.textField.layer.cornerRadius = 5.0f;
-//    
-//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-//    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillHid:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(keyboardWillHid:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated{

@@ -11,7 +11,6 @@
 @interface XBAcFunAcSubView()
 @property (strong, nonatomic) UIImageView *avatarImageView;
 @property (strong, nonatomic) UILabel *commentLabel;
-
 @end
 
 @implementation XBAcFunAcSubView
@@ -50,8 +49,8 @@
     CGPoint startPoint = CGPointMake(location.x + self.origin.x, self.origin.y - 10);
     [self.superview.layer addSublayer:[XBAcFunTouchAnimation createAnimationAtPoint:startPoint]];
     
-    dispatch_semaphore_t semaphore_t = dispatch_semaphore_create(1);
-    dispatch_semaphore_wait(semaphore_t, DISPATCH_TIME_FOREVER);
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     if (self.acFunItem.acFunBgColorType != XBAcFunBgColorType_Top) {
         self.acFunItem.acFunBgColorType = XBAcFunBgColorType_Top;
         self.backgroundColor = [[UIColor colorWithRGBHex:XBAcFunBgColorType_Top]colorWithAlphaComponent:0.85];
@@ -59,7 +58,7 @@
     if (self.touchAcFunBlock) {
         self.touchAcFunBlock(self.acFunItem);
     }
-    dispatch_semaphore_signal(semaphore_t);
+    dispatch_semaphore_signal(semaphore);
 }
 
 - (UILabel *)commentLabel{

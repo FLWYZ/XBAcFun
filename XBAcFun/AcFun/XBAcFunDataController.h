@@ -15,12 +15,15 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 
 @property (assign, nonatomic) BOOL isShowingAcFun;
 
+@property (assign, nonatomic) CGRect displayArea;
+
 /**
  *  设置图片缓存区数组的长度
  */
 @property (assign, nonatomic) NSInteger sizeOfDownloadingImageArray;
 
-- (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval;
+- (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval
+                         withCustomParams:(XBAcFunCustomParam *)acfunCustomParams;
 
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> * )comments;
 
@@ -36,7 +39,7 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 /**
  *  该弹道是否可以发射弹幕 （仅仅表示，该弹道上是否可以飘弹幕，不表示该弹道上已经准备好了弹幕）
  */
-- (BOOL)couldShowAcFunOnCurve:(XBAcFunCurve)aCurve;
+- (BOOL)couldShowAcFunOnCurve:(XBAcFunCurve)aCurve autoUpdateTimeInterval:(BOOL)isAutoUpdate;
 
 - (BOOL)hasShowAllAcFuns;
 
