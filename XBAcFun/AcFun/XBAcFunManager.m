@@ -80,7 +80,9 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
 - (void)showAcFunWithAcFunAcItems:(NSArray<XBAcFunAcItem *> *)acfunItems inView:(UIView *)baseView{
     if (acfunItems.count > 0 && baseView != nil) {
         self.acFunBaseView = baseView;
-        self.dataController.displayArea = baseView.bounds;
+        if (!CGRectEqualToRect(self.dataController.displayArea, baseView.bounds)) {
+            self.dataController.displayArea = baseView.bounds;
+        }
         [self.dataController creatAcFunItems:acfunItems];
     }
 }
@@ -145,7 +147,6 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
                 }else{
                     acFunItem = objc_getAssociatedObject(view, &kAcFunItemKey);
                 }
-                
                 if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed &&
                     acFunItem.isPrivateComment == YES) {
                     if (acFunItem.displayedDuration >= acFunItem.timeDuration) {
@@ -179,9 +180,9 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
                         view.x -= (view.width + kScreenWidth) / (acFunItem.timeDuration * 60.0);
                     }
                 }
-            }
-            if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
-                [self stopAcFunAnimationTimer];
+                if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
+                    [self stopAcFunAnimationTimer];
+                }
             }
         });
     });
@@ -258,7 +259,7 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
 }
 
 - (XBAcFunCustomParam *)acfunCustomParamMaker{
-    if (_acfunCustomParamMaker) {
+    if (_acfunCustomParamMaker == nil) {
         _acfunCustomParamMaker = [[XBAcFunCustomParam alloc]init];
     }
     return _acfunCustomParamMaker;

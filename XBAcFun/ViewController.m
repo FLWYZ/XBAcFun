@@ -16,7 +16,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *blackMaskButton;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *textFieldBaseBottomLayout;
 
-@property (weak, nonatomic) IBOutlet UIImageView *bgImage;
 @property (strong, nonatomic) XBAcFunManager * acfunManager;
 @property (strong, nonatomic) NSMutableArray * dataSource;
 @end
@@ -43,7 +42,7 @@
          * since in my working situation I need to wait until all acfuns have been downloaded already, then start the diplaying .U can change it depend on your situation
          */
         self.acfunManager.hasLoadAllAcfun = YES;
-//        [self.acfunManager startAcFun];
+        [self.acfunManager startAcFun];
     });
 }
 
@@ -86,7 +85,11 @@
     [UIView animateWithDuration:[[notify.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
         self.blackMaskButton.alpha = 1.0;
         self.textFieldBaseBottomLayout.constant = CGRectGetHeight(targetRect);
-        _acfunManager.currentBaseOriginY = CGRectGetHeight(self.view.frame) - CGRectGetHeight(targetRect) - 140.0 - 60;
+        
+        _acfunManager.currentBaseOriginY = - (CGRectGetHeight(targetRect) + 60 + 20);
+        
+        
+        
         [self.view layoutSubviews];
     }];
 }
@@ -95,7 +98,7 @@
     [UIView animateWithDuration:[[notify.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
         self.blackMaskButton.alpha = 0.0;
         self.textFieldBaseBottomLayout.constant = - 50.0;
-        _acfunManager.currentBaseOriginY = CGRectGetHeight(self.view.frame) - 140.0;
+        _acfunManager.currentBaseOriginY = 0;
         [self.view layoutSubviews];
     }];
 }
@@ -160,7 +163,6 @@
 - (XBAcFunManager *)acfunManager{
     if (_acfunManager == nil) {
         _acfunManager = [[XBAcFunManager alloc]init];
-        _acfunManager.currentBaseOriginY = CGRectGetHeight(self.view.frame) - 140.0;
         _acfunManager.belowView = self.blackMaskButton;
     }
     return _acfunManager;

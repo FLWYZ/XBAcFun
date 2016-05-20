@@ -61,6 +61,16 @@
     return _contentWidth;
 }
 
+- (void)setPosterAvatar:(NSString *)posterAvatar{
+    _posterAvatar = posterAvatar;
+    if (posterAvatar != nil && ![posterAvatar isEqualToString:@""]) {
+        UIImage * image = [UIImage imageNamed:posterAvatar];
+        if (image != nil) {
+            _posterAvatarImage = image;
+        }
+    }
+}
+
 - (NSString *)content{
     return [_content stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
 }
@@ -70,7 +80,9 @@
     item.content = [dic objectForKey:@"content"];
     item.posterAvatar = [dic objectForKey:@"posterAvatar"];
     item.likeCount = [dic objectForKey:@"likeCount"];
-    item.posterAvatarImage = [dic objectForKey:@"posterAvatarImage"];
+    if ([dic objectForKey:@"posterAvatarImage"] != nil) {
+        item.posterAvatarImage = [dic objectForKey:@"posterAvatarImage"];
+    }
     return item;
 }
 
@@ -178,6 +190,20 @@
         self.acfunDisplayEdge = edge;
         return self;
     };
+}
+
+- (id)copyWithZone:(NSZone *)zone{
+    XBAcFunCustomParam * param = [[XBAcFunCustomParam alloc]init];
+    param.acfunDisplayEdge           = self.acfunDisplayEdge;
+    param.acfunLineHeight            = self.acfunLineHeight;
+    param.acfunNumberOfLines         = self.acfunNumberOfLines;
+    param.acfunLineSpace             = self.acfunLineSpace;
+    param.acfunMovingSpeedRate       = self.acfunMovingSpeedRate;
+    param.acfunPrivateAppearStrategy = self.acfunPrivateAppearStrategy;
+    param.acfunPrivateApearPoint     = self.acfunPrivateApearPoint;
+    param.acfunVerticalDirection     = self.acfunVerticalDirection;
+    
+    return param;
 }
 
 @end

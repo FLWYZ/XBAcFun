@@ -72,7 +72,7 @@ typedef NS_ENUM(NSUInteger, XBAcFunVerticalDirection) {
  *  弹幕上的自定义参数
  *  the custom params of the AcFun
  */
-@interface XBAcFunCustomParam : NSObject
+@interface XBAcFunCustomParam : NSObject<NSCopying>
 
 /**
  *  determine the top , bottom edge

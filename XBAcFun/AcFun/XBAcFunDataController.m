@@ -71,8 +71,8 @@
         self.avarageUpdateTimeInterval = timeInterval;
         self.sizeOfDownloadingImageArray = 20;
         self.acfunCustomParams = acfunCustomParams;
+        self.displayArea = CGRectZero;
         [self initAcFunTimeIntervalArray];
-        [self initAcFunStartPointArray];
     }
     return self;
 }
@@ -266,7 +266,9 @@
         [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
         [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
         for (XBAcFunAcItem * item in subArray) {
-            if (item.content != nil && ![item.content isEqualToString:@""]) {
+            if (item.posterAvatarImage != nil) {
+                operationBlock(item);
+            }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]) {
                 if (item.imageDownloadTimes > 2) {
                     operationBlock(item);
                 }else{
@@ -407,6 +409,7 @@
                 break;
         }
     }
+    
 }
 
 - (NSTimeInterval)animationDuration:(XBAcFunAcItem *)acfunItem{
@@ -484,6 +487,11 @@
         _acfunItemArray_FinishedDownloadImage = [NSMutableArray arrayWithCapacity:20];
     }
     return _acfunItemArray_FinishedDownloadImage;
+}
+
+- (void)setDisplayArea:(CGRect)displayArea{
+    _displayArea = displayArea;
+    [self initAcFunStartPointArray];
 }
 
 @end

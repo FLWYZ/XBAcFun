@@ -50,6 +50,12 @@
 
 @property (copy, nonatomic) TouchAcFunBlock touchAcFunBlock;
 
+/**
+ *  if you want to change the origin.y of the acfun while tha acfun is in showing
+ *  plz set this property rather than set the acfunCustomParamMaker.acfunDisplayEdge
+ *  and the acfunCustomParamMaker.acfunDisplayEdge is used to calculate the start position of all the acfuns
+ *  it's just used before the acfun will display
+ */
 @property (assign, nonatomic) CGFloat currentBaseOriginY;
 
 @property (weak, nonatomic) UIView * belowView;
