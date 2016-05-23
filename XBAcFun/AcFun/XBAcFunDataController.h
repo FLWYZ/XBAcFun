@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "XBAcFunCommon.h"
+@class XBAcFunManager;
 
 typedef void(^OperationBlock)(XBAcFunAcItem * item);
 
@@ -17,13 +18,15 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 
 @property (assign, nonatomic) CGRect displayArea;
 
+@property (assign, nonatomic) BOOL shouldAutoDownloadAvator;
+
 /**
  *  设置图片缓存区数组的长度
  */
 @property (assign, nonatomic) NSInteger sizeOfDownloadingImageArray;
 
 - (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval
-                         withCustomParams:(XBAcFunCustomParam *)acfunCustomParams;
+                         withAcFunManager:(XBAcFunManager *)acfunManager;
 
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> * )comments;
 

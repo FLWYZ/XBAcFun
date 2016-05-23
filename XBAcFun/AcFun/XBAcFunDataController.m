@@ -59,19 +59,23 @@
  */
 @property (assign, nonatomic) XBAcFunCurve randomCurve;
 
+@property (weak, nonatomic) XBAcFunManager * acfunManager;
+
 @end
 
 @implementation XBAcFunDataController
 
 #pragma mark - public 
 
-- (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval withCustomParams:(XBAcFunCustomParam *)acfunCustomParams{
+- (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval withAcFunManager:(XBAcFunManager *)acfunManager{
     if (self = [super init]) {
         self.isShowingAcFun = NO;
         self.avarageUpdateTimeInterval = timeInterval;
         self.sizeOfDownloadingImageArray = 20;
-        self.acfunCustomParams = acfunCustomParams;
+        self.acfunManager = acfunManager;
+        self.acfunCustomParams = acfunManager.acfunCustomParamMaker;
         self.displayArea = CGRectZero;
+        self.shouldAutoDownloadAvator = YES;
         [self initAcFunTimeIntervalArray];
     }
     return self;
@@ -260,27 +264,49 @@
         [self.acfunItemArray_InDownloadingImage removeObject:item];
         [self bringAcFunItemToDownloadingArray];
     };
+    void (^failBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
+        item.imageDownloadTimes++;
+        [self.acFunItemArray_WaitDownloadImage addObject:item];
+    };
     if (buffer > 0) {
         NSRange range = NSMakeRange(0, buffer);
         NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
         [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
         [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
         for (XBAcFunAcItem * item in subArray) {
-            if (item.posterAvatarImage != nil) {
+            if (self.shouldAutoDownloadAvator == NO) {
                 operationBlock(item);
-            }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]) {
-                if (item.imageDownloadTimes > 2) {
-                    operationBlock(item);
-                }else{
-                    [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                        operationBlock(item);
-                    } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                        item.imageDownloadTimes++;
-                        [self.acFunItemArray_WaitDownloadImage addObject:item];
-                    }];
-                }
             }else{
-                operationBlock(item);
+                if (item.posterAvatarImage != nil) {
+                    operationBlock(item);
+                }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]) {
+                    if (item.imageDownloadTimes > 2) {
+                        operationBlock(item);
+                    }else{
+                        if (self.acfunManager.customAcFunAvatorDownloadBlock != nil) {
+                            self.acfunManager.customAcFunAvatorDownloadBlock(item,^{
+                                operationBlock(item);
+                            },^{
+                                failBlock(item);
+                            });
+                        }
+                        else if ([self.acfunManager.delegate respondsToSelector:@selector(customAcFunAvatorDownload:succeedBlock:failBlock:)]) {
+                            [self.acfunManager.delegate customAcFunAvatorDownload:item succeedBlock:^{
+                                operationBlock(item);
+                            } failBlock:^{
+                                failBlock(item);
+                            }];
+                        }else{
+                            [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                                operationBlock(item);
+                            } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                                failBlock(item);
+                            }];
+                        }
+                    }
+                }else{
+                    operationBlock(item);
+                }
             }
         }
     }
@@ -426,7 +452,6 @@
 
 - (CGPoint)startPointAtCurve:(XBAcFunCurve)aCurve{
     CGPoint startPoint = CGPointZero;
-    
     if (aCurve == [self privateLaunchAcFunCurve]) {
         switch (self.acfunCustomParams.acfunPrivateAppearStrategy) {
             case XBAcFunPrivateAppearStrategy_Flutter_Top:
@@ -455,7 +480,6 @@
     }else{
         startPoint = ((NSValue *)self.acFunStartPointArray[aCurve]).CGPointValue;
     }
-    
     return startPoint;
 }
 

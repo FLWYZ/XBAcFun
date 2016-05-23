@@ -246,7 +246,7 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
 
 - (XBAcFunDataController *)dataController{
     if (_dataController == nil) {
-        _dataController = [[XBAcFunDataController alloc]initWithAvarageUpdateTime:kUpdateTimeInterval withCustomParams:self.acfunCustomParamMaker];
+        _dataController = [[XBAcFunDataController alloc]initWithAvarageUpdateTime:kUpdateTimeInterval withAcFunManager:self];
     }
     return _dataController;
 }
@@ -263,6 +263,10 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
         _acfunCustomParamMaker = [[XBAcFunCustomParam alloc]init];
     }
     return _acfunCustomParamMaker;
+}
+
+- (void)setShouldAutoDownloadAvator:(BOOL)shouldAutoDownloadAvator{
+    self.dataController.shouldAutoDownloadAvator = shouldAutoDownloadAvator;
 }
 
 @end

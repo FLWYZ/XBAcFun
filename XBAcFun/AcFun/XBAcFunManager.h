@@ -34,6 +34,13 @@
  */
 - (void)customTouchAcFunViewBehaviour:(XBAcFunAcItem *)acfunItem;
 
+/**
+ *  if you want to download the avatar by your own function , plz use this delegate 
+ *  and call 'succeed' , when download the avator succeed
+ *  call 'fail' , when download the avator fail
+ */
+- (void)customAcFunAvatorDownload:(XBAcFunAcItem *)item succeedBlock:(void(^)(void))succeed failBlock:(void(^)(void))fail;
+
 @end
 
 @interface XBAcFunManager : NSObject
@@ -48,6 +55,8 @@
 
 @property (copy, nonatomic) void (^customAcfunDisappearBehaviourBlock)(XBAcFunAcItem * acfunItem,UIView * acfunView);
 
+@property (copy, nonatomic) void (^customAcFunAvatorDownloadBlock)(XBAcFunAcItem * acfunItem,void (^succeed)(void),void (^fail)(void));
+
 @property (copy, nonatomic) TouchAcFunBlock touchAcFunBlock;
 
 /**
@@ -59,6 +68,12 @@
 @property (assign, nonatomic) CGFloat currentBaseOriginY;
 
 @property (weak, nonatomic) UIView * belowView;
+
+/**
+ *  if you don't want to download the avator image before acfun display,
+ *  plz set thie property before call 'showAcFunWithComments' or 'showAcFunWithAcFunAcItems'
+ */
+@property (assign, nonatomic) BOOL shouldAutoDownloadAvator;
 
 /**
  *  to set the acfun custom params
