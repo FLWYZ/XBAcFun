@@ -183,6 +183,7 @@
 		88468A5F1CE338FF001F3AAA /* AcFun */ = {
 			isa = PBXGroup;
 			children = (
+				88468A681CE338FF001F3AAA /* XBAcFunCommon.h */,
 				88468A601CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.h */,
 				88468A611CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m */,
 				88468A621CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.h */,
@@ -191,7 +192,6 @@
 				88468A651CE338FF001F3AAA /* XBAcFunAcItem.m */,
 				88468A661CE338FF001F3AAA /* XBAcFunAcSubView.h */,
 				88468A671CE338FF001F3AAA /* XBAcFunAcSubView.m */,
-				88468A681CE338FF001F3AAA /* XBAcFunCommon.h */,
 				88468A691CE338FF001F3AAA /* XBAcFunDataController.h */,
 				88468A6A1CE338FF001F3AAA /* XBAcFunDataController.m */,
 				880D2DFD1CE5A63A00998C7D /* XBAcFunDownloadImageManager.h */,

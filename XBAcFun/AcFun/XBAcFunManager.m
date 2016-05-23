@@ -7,8 +7,10 @@
 //
 
 #import "XBAcFunCommon.h"
+#import <objc/runtime.h>
 
 static BOOL isOpenAcFun = YES;
+static const char * kAcFunItemKey = "kAcFunItemKey";
 
 #define kUpdateTimeInterval 1.0/60.0
 
@@ -78,6 +80,9 @@ static BOOL isOpenAcFun = YES;
 - (void)showAcFunWithAcFunAcItems:(NSArray<XBAcFunAcItem *> *)acfunItems inView:(UIView *)baseView{
     if (acfunItems.count > 0 && baseView != nil) {
         self.acFunBaseView = baseView;
+        if (!CGRectEqualToRect(self.dataController.displayArea, baseView.bounds)) {
+            self.dataController.displayArea = baseView.bounds;
+        }
         [self.dataController creatAcFunItems:acfunItems];
     }
 }
@@ -121,7 +126,7 @@ static BOOL isOpenAcFun = YES;
             }else if ([self.dataController acFunIsReady]) {
                 self.dataController.isShowingAcFun = YES;
                 [self.dataController launchAllCurvesWithOperation:^(XBAcFunAcItem *item) {
-                    [self addAcFunItemIntoAnimationQueue:item isNewPrivateComment:NO];
+                    [self addAcFunItemIntoAnimationQueue:item];
                 }];
             }
         });
@@ -135,33 +140,87 @@ static BOOL isOpenAcFun = YES;
     dispatch_source_set_event_handler(self.acFunAnimationTimer, ^{
         dispatch_async(dispatch_get_main_queue(), ^{
             for (NSInteger index = self.acFunItemArray.count - 1; index >= 0; index--) {
-                XBAcFunAcSubView * subView = self.acFunItemArray[index];
-                if (subView.x <= -subView.width) {
-                    [subView removeFromSuperview];
-                    [self.acFunItemArray removeObject:subView];
+                XBAcFunAcItem * acFunItem = nil;
+                UIView * view = self.acFunItemArray[index];
+                if ([view isKindOfClass:[XBAcFunAcSubView class]]) {
+                    acFunItem = ((XBAcFunAcSubView *)view).acFunItem;
                 }else{
-                    subView.y = self.currentBaseOriginY + subView.acFunItem.startPoint.y;
-                    subView.x -= (subView.width + kScreenWidth) / (subView.acFunItem.timeDuration * 60.0);
+                    acFunItem = objc_getAssociatedObject(view, &kAcFunItemKey);
                 }
-            }
-            if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
-                [self stopAcFunAnimationTimer];
+                if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed &&
+                    acFunItem.isPrivateComment == YES) {
+                    if (acFunItem.displayedDuration >= acFunItem.timeDuration) {
+                        if (self.customAcfunDisappearBehaviourBlock) {
+                            self.customAcfunDisappearBehaviourBlock(acFunItem,view);
+                        }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
+                            [self.delegate customAcfunDisappearBehaviour:acFunItem acfunView:view];
+                        }else{
+                            [view removeFromSuperview];
+                        }
+                    }else{
+                        acFunItem.displayedDuration += kUpdateTimeInterval;
+                        if (acFunItem.displayedDuration < acFunItem.timeDuration / 2.0) {
+                            view.alpha += 2 * kUpdateTimeInterval;
+                        }else{
+                            view.alpha -= 2 * kUpdateTimeInterval;
+                        }
+                    }
+                }else{
+                    if (view.x <= -view.width) {
+                        if (self.customAcfunDisappearBehaviourBlock) {
+                            self.customAcfunDisappearBehaviourBlock(acFunItem,view);
+                        }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
+                            [self.delegate customAcfunDisappearBehaviour:acFunItem acfunView:view];
+                        }else{
+                            [view removeFromSuperview];
+                        }
+                        [self.acFunItemArray removeObject:view];
+                    }else{
+                        view.y = self.currentBaseOriginY + acFunItem.startPoint.y;
+                        view.x -= (view.width + kScreenWidth) / (acFunItem.timeDuration * 60.0);
+                    }
+                }
+                if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
+                    [self stopAcFunAnimationTimer];
+                }
             }
         });
     });
     dispatch_resume(self.acFunAnimationTimer);
 }
 
-- (void)addAcFunItemIntoAnimationQueue:(XBAcFunAcItem *)acFunItem isNewPrivateComment:(BOOL)isNewPrivateComment{
+- (void)addAcFunItemIntoAnimationQueue:(XBAcFunAcItem *)acFunItem{
     if (self.dataController.isShowingAcFun) {
-        XBAcFunAcSubView * subView = [[XBAcFunAcSubView alloc]initWithAcItem:acFunItem];
-        subView.touchAcFunBlock = self.touchAcFunBlock;
-        [self.acFunBaseView addSubview:subView];
-        subView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
-        if (self.belowView) {
-            [self.acFunBaseView insertSubview:subView belowSubview:self.belowView];
+        UIView * acfunSubView = nil;
+        if (self.customAcFunSubViewBlock) {
+            acfunSubView = self.customAcFunSubViewBlock(acFunItem);
+            objc_setAssociatedObject(acfunSubView, &kAcFunItemKey, acFunItem, OBJC_ASSOCIATION_RETAIN);
+        }else if ([self.delegate respondsToSelector:@selector(customAcFunSubView:)]) {
+            acfunSubView = [self.delegate customAcFunSubView:acFunItem];
+            objc_setAssociatedObject(acfunSubView, &kAcFunItemKey, acFunItem, OBJC_ASSOCIATION_RETAIN);
+        }else{
+            XBAcFunAcSubView * subView = [[XBAcFunAcSubView alloc]initWithAcItem:acFunItem];
+            if (self.touchAcFunBlock) {
+                subView.touchAcFunBlock = self.touchAcFunBlock;
+            }else if ([self.delegate respondsToSelector:@selector(customTouchAcFunViewBehaviour:)]){
+                __weak typeof(self) weakself = self;
+                subView.touchAcFunBlock = ^(XBAcFunAcItem * acfunItem){
+                    [weakself.delegate customTouchAcFunViewBehaviour:acFunItem];
+                };
+            }
+            acfunSubView = subView;
         }
-        [self.acFunItemArray addObject:subView];
+        
+        if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed) {
+            acfunSubView.alpha = 0.0;
+            acfunSubView.layer.zPosition = -1;
+        }
+        [self.acFunBaseView addSubview:acfunSubView];
+        acfunSubView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        if (self.belowView) {
+            [self.acFunBaseView insertSubview:acfunSubView belowSubview:self.belowView];
+        }
+        [self.acFunItemArray addObject:acfunSubView];
     }
 }
 
@@ -187,7 +246,7 @@ static BOOL isOpenAcFun = YES;
 
 - (XBAcFunDataController *)dataController{
     if (_dataController == nil) {
-        _dataController = [[XBAcFunDataController alloc]initWithAvarageUpdateTime:kUpdateTimeInterval];
+        _dataController = [[XBAcFunDataController alloc]initWithAvarageUpdateTime:kUpdateTimeInterval withAcFunManager:self];
     }
     return _dataController;
 }
@@ -198,4 +257,16 @@ static BOOL isOpenAcFun = YES;
     }
     return _acFunItemArray;
 }
+
+- (XBAcFunCustomParam *)acfunCustomParamMaker{
+    if (_acfunCustomParamMaker == nil) {
+        _acfunCustomParamMaker = [[XBAcFunCustomParam alloc]init];
+    }
+    return _acfunCustomParamMaker;
+}
+
+- (void)setShouldAutoDownloadAvator:(BOOL)shouldAutoDownloadAvator{
+    self.dataController.shouldAutoDownloadAvator = shouldAutoDownloadAvator;
+}
+
 @end
