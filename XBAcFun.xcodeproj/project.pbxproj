@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		880D2DF81CE450F400998C7D /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2DF71CE450F400998C7D /* TableViewCell.m */; };
 		880D2DFC1CE45ABF00998C7D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 880D2DFB1CE45ABF00998C7D /* Images.xcassets */; };
-		880D2DFF1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2DFE1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m */; };
-		880D2E021CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 880D2E011CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m */; };
 		88468A2E1CE338F0001F3AAA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A2D1CE338F0001F3AAA /* main.m */; };
 		88468A311CE338F0001F3AAA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A301CE338F0001F3AAA /* AppDelegate.m */; };
 		88468A341CE338F0001F3AAA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A331CE338F0001F3AAA /* ViewController.m */; };
@@ -19,14 +17,16 @@
 		88468A3C1CE338F0001F3AAA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88468A3A1CE338F0001F3AAA /* LaunchScreen.storyboard */; };
 		88468A471CE338F0001F3AAA /* XBAcFunTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A461CE338F0001F3AAA /* XBAcFunTests.m */; };
 		88468A521CE338F0001F3AAA /* XBAcFunUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A511CE338F0001F3AAA /* XBAcFunUITests.m */; };
-		88468A711CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A611CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m */; };
-		88468A721CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A631CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.m */; };
-		88468A731CE338FF001F3AAA /* XBAcFunAcItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A651CE338FF001F3AAA /* XBAcFunAcItem.m */; };
-		88468A741CE338FF001F3AAA /* XBAcFunAcSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A671CE338FF001F3AAA /* XBAcFunAcSubView.m */; };
-		88468A751CE338FF001F3AAA /* XBAcFunDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A6A1CE338FF001F3AAA /* XBAcFunDataController.m */; };
-		88468A761CE338FF001F3AAA /* XBAcFunManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A6C1CE338FF001F3AAA /* XBAcFunManager.m */; };
-		88468A771CE338FF001F3AAA /* XBAcFunMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A6E1CE338FF001F3AAA /* XBAcFunMessageView.m */; };
-		88468A781CE338FF001F3AAA /* XBAcFunTouchAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 88468A701CE338FF001F3AAA /* XBAcFunTouchAnimation.m */; };
+		88AEBED91CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBEC51CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.m */; };
+		88AEBEDA1CF2DA94009E495F /* UIImageView+XBAcFunExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBEC71CF2DA94009E495F /* UIImageView+XBAcFunExtension.m */; };
+		88AEBEDB1CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBEC91CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.m */; };
+		88AEBEDC1CF2DA94009E495F /* XBAcFunAcItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBECB1CF2DA94009E495F /* XBAcFunAcItem.m */; };
+		88AEBEDD1CF2DA94009E495F /* XBAcFunAcSubView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBECD1CF2DA94009E495F /* XBAcFunAcSubView.m */; };
+		88AEBEDE1CF2DA94009E495F /* XBAcFunDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED01CF2DA94009E495F /* XBAcFunDataController.m */; };
+		88AEBEDF1CF2DA94009E495F /* XBAcFunDownloadImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED21CF2DA94009E495F /* XBAcFunDownloadImageManager.m */; };
+		88AEBEE01CF2DA94009E495F /* XBAcFunManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED41CF2DA94009E495F /* XBAcFunManager.m */; };
+		88AEBEE11CF2DA94009E495F /* XBAcFunMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED61CF2DA94009E495F /* XBAcFunMessageView.m */; };
+		88AEBEE21CF2DA94009E495F /* XBAcFunTouchAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED81CF2DA94009E495F /* XBAcFunTouchAnimation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,10 +50,6 @@
 		880D2DF61CE450F400998C7D /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		880D2DF71CE450F400998C7D /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		880D2DFB1CE45ABF00998C7D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		880D2DFD1CE5A63A00998C7D /* XBAcFunDownloadImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunDownloadImageManager.h; sourceTree = "<group>"; };
-		880D2DFE1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunDownloadImageManager.m; sourceTree = "<group>"; };
-		880D2E001CE5BE7500998C7D /* UIImageView+XBAcFunExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+XBAcFunExtension.h"; sourceTree = "<group>"; };
-		880D2E011CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XBAcFunExtension.m"; sourceTree = "<group>"; };
 		88468A291CE338F0001F3AAA /* XBAcFun.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBAcFun.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88468A2D1CE338F0001F3AAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		88468A2F1CE338F0001F3AAA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -70,23 +66,27 @@
 		88468A4D1CE338F0001F3AAA /* XBAcFunUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBAcFunUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		88468A511CE338F0001F3AAA /* XBAcFunUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XBAcFunUITests.m; sourceTree = "<group>"; };
 		88468A531CE338F0001F3AAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		88468A601CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+XBAcFunUIColorExtension.h"; sourceTree = "<group>"; };
-		88468A611CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+XBAcFunUIColorExtension.m"; sourceTree = "<group>"; };
-		88468A621CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+XBAcFunUIViewExtension.h"; sourceTree = "<group>"; };
-		88468A631CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+XBAcFunUIViewExtension.m"; sourceTree = "<group>"; };
-		88468A641CE338FF001F3AAA /* XBAcFunAcItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunAcItem.h; sourceTree = "<group>"; };
-		88468A651CE338FF001F3AAA /* XBAcFunAcItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunAcItem.m; sourceTree = "<group>"; };
-		88468A661CE338FF001F3AAA /* XBAcFunAcSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunAcSubView.h; sourceTree = "<group>"; };
-		88468A671CE338FF001F3AAA /* XBAcFunAcSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunAcSubView.m; sourceTree = "<group>"; };
-		88468A681CE338FF001F3AAA /* XBAcFunCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunCommon.h; sourceTree = "<group>"; };
-		88468A691CE338FF001F3AAA /* XBAcFunDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunDataController.h; sourceTree = "<group>"; };
-		88468A6A1CE338FF001F3AAA /* XBAcFunDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunDataController.m; sourceTree = "<group>"; };
-		88468A6B1CE338FF001F3AAA /* XBAcFunManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunManager.h; sourceTree = "<group>"; };
-		88468A6C1CE338FF001F3AAA /* XBAcFunManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunManager.m; sourceTree = "<group>"; };
-		88468A6D1CE338FF001F3AAA /* XBAcFunMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunMessageView.h; sourceTree = "<group>"; };
-		88468A6E1CE338FF001F3AAA /* XBAcFunMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunMessageView.m; sourceTree = "<group>"; };
-		88468A6F1CE338FF001F3AAA /* XBAcFunTouchAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunTouchAnimation.h; sourceTree = "<group>"; };
-		88468A701CE338FF001F3AAA /* XBAcFunTouchAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunTouchAnimation.m; sourceTree = "<group>"; };
+		88AEBEC41CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+XBAcFunUIColorExtension.h"; sourceTree = "<group>"; };
+		88AEBEC51CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+XBAcFunUIColorExtension.m"; sourceTree = "<group>"; };
+		88AEBEC61CF2DA94009E495F /* UIImageView+XBAcFunExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+XBAcFunExtension.h"; sourceTree = "<group>"; };
+		88AEBEC71CF2DA94009E495F /* UIImageView+XBAcFunExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XBAcFunExtension.m"; sourceTree = "<group>"; };
+		88AEBEC81CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+XBAcFunUIViewExtension.h"; sourceTree = "<group>"; };
+		88AEBEC91CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+XBAcFunUIViewExtension.m"; sourceTree = "<group>"; };
+		88AEBECA1CF2DA94009E495F /* XBAcFunAcItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunAcItem.h; sourceTree = "<group>"; };
+		88AEBECB1CF2DA94009E495F /* XBAcFunAcItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunAcItem.m; sourceTree = "<group>"; };
+		88AEBECC1CF2DA94009E495F /* XBAcFunAcSubView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunAcSubView.h; sourceTree = "<group>"; };
+		88AEBECD1CF2DA94009E495F /* XBAcFunAcSubView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunAcSubView.m; sourceTree = "<group>"; };
+		88AEBECE1CF2DA94009E495F /* XBAcFunCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunCommon.h; sourceTree = "<group>"; };
+		88AEBECF1CF2DA94009E495F /* XBAcFunDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunDataController.h; sourceTree = "<group>"; };
+		88AEBED01CF2DA94009E495F /* XBAcFunDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunDataController.m; sourceTree = "<group>"; };
+		88AEBED11CF2DA94009E495F /* XBAcFunDownloadImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunDownloadImageManager.h; sourceTree = "<group>"; };
+		88AEBED21CF2DA94009E495F /* XBAcFunDownloadImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunDownloadImageManager.m; sourceTree = "<group>"; };
+		88AEBED31CF2DA94009E495F /* XBAcFunManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunManager.h; sourceTree = "<group>"; };
+		88AEBED41CF2DA94009E495F /* XBAcFunManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunManager.m; sourceTree = "<group>"; };
+		88AEBED51CF2DA94009E495F /* XBAcFunMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunMessageView.h; sourceTree = "<group>"; };
+		88AEBED61CF2DA94009E495F /* XBAcFunMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunMessageView.m; sourceTree = "<group>"; };
+		88AEBED71CF2DA94009E495F /* XBAcFunTouchAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunTouchAnimation.h; sourceTree = "<group>"; };
+		88AEBED81CF2DA94009E495F /* XBAcFunTouchAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunTouchAnimation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,7 +137,7 @@
 		88468A2B1CE338F0001F3AAA /* XBAcFun */ = {
 			isa = PBXGroup;
 			children = (
-				88468A5F1CE338FF001F3AAA /* AcFun */,
+				88AEBEC31CF2DA94009E495F /* XBAcFun */,
 				88468A2F1CE338F0001F3AAA /* AppDelegate.h */,
 				88468A301CE338F0001F3AAA /* AppDelegate.m */,
 				88468A321CE338F0001F3AAA /* ViewController.h */,
@@ -180,32 +180,32 @@
 			path = XBAcFunUITests;
 			sourceTree = "<group>";
 		};
-		88468A5F1CE338FF001F3AAA /* AcFun */ = {
+		88AEBEC31CF2DA94009E495F /* XBAcFun */ = {
 			isa = PBXGroup;
 			children = (
-				88468A681CE338FF001F3AAA /* XBAcFunCommon.h */,
-				88468A601CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.h */,
-				88468A611CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m */,
-				88468A621CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.h */,
-				88468A631CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.m */,
-				88468A641CE338FF001F3AAA /* XBAcFunAcItem.h */,
-				88468A651CE338FF001F3AAA /* XBAcFunAcItem.m */,
-				88468A661CE338FF001F3AAA /* XBAcFunAcSubView.h */,
-				88468A671CE338FF001F3AAA /* XBAcFunAcSubView.m */,
-				88468A691CE338FF001F3AAA /* XBAcFunDataController.h */,
-				88468A6A1CE338FF001F3AAA /* XBAcFunDataController.m */,
-				880D2DFD1CE5A63A00998C7D /* XBAcFunDownloadImageManager.h */,
-				880D2DFE1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m */,
-				88468A6B1CE338FF001F3AAA /* XBAcFunManager.h */,
-				88468A6C1CE338FF001F3AAA /* XBAcFunManager.m */,
-				88468A6D1CE338FF001F3AAA /* XBAcFunMessageView.h */,
-				88468A6E1CE338FF001F3AAA /* XBAcFunMessageView.m */,
-				88468A6F1CE338FF001F3AAA /* XBAcFunTouchAnimation.h */,
-				88468A701CE338FF001F3AAA /* XBAcFunTouchAnimation.m */,
-				880D2E001CE5BE7500998C7D /* UIImageView+XBAcFunExtension.h */,
-				880D2E011CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m */,
+				88AEBEC41CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.h */,
+				88AEBEC51CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.m */,
+				88AEBEC61CF2DA94009E495F /* UIImageView+XBAcFunExtension.h */,
+				88AEBEC71CF2DA94009E495F /* UIImageView+XBAcFunExtension.m */,
+				88AEBEC81CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.h */,
+				88AEBEC91CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.m */,
+				88AEBECA1CF2DA94009E495F /* XBAcFunAcItem.h */,
+				88AEBECB1CF2DA94009E495F /* XBAcFunAcItem.m */,
+				88AEBECC1CF2DA94009E495F /* XBAcFunAcSubView.h */,
+				88AEBECD1CF2DA94009E495F /* XBAcFunAcSubView.m */,
+				88AEBECE1CF2DA94009E495F /* XBAcFunCommon.h */,
+				88AEBECF1CF2DA94009E495F /* XBAcFunDataController.h */,
+				88AEBED01CF2DA94009E495F /* XBAcFunDataController.m */,
+				88AEBED11CF2DA94009E495F /* XBAcFunDownloadImageManager.h */,
+				88AEBED21CF2DA94009E495F /* XBAcFunDownloadImageManager.m */,
+				88AEBED31CF2DA94009E495F /* XBAcFunManager.h */,
+				88AEBED41CF2DA94009E495F /* XBAcFunManager.m */,
+				88AEBED51CF2DA94009E495F /* XBAcFunMessageView.h */,
+				88AEBED61CF2DA94009E495F /* XBAcFunMessageView.m */,
+				88AEBED71CF2DA94009E495F /* XBAcFunTouchAnimation.h */,
+				88AEBED81CF2DA94009E495F /* XBAcFunTouchAnimation.m */,
 			);
-			path = AcFun;
+			path = XBAcFun;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -340,19 +340,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				88468A341CE338F0001F3AAA /* ViewController.m in Sources */,
+				88AEBEE01CF2DA94009E495F /* XBAcFunManager.m in Sources */,
+				88AEBEDB1CF2DA94009E495F /* UIView+XBAcFunUIViewExtension.m in Sources */,
 				880D2DF81CE450F400998C7D /* TableViewCell.m in Sources */,
-				880D2DFF1CE5A63A00998C7D /* XBAcFunDownloadImageManager.m in Sources */,
-				88468A761CE338FF001F3AAA /* XBAcFunManager.m in Sources */,
-				88468A741CE338FF001F3AAA /* XBAcFunAcSubView.m in Sources */,
 				88468A311CE338F0001F3AAA /* AppDelegate.m in Sources */,
-				88468A771CE338FF001F3AAA /* XBAcFunMessageView.m in Sources */,
-				88468A731CE338FF001F3AAA /* XBAcFunAcItem.m in Sources */,
+				88AEBEDC1CF2DA94009E495F /* XBAcFunAcItem.m in Sources */,
+				88AEBED91CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.m in Sources */,
+				88AEBEE11CF2DA94009E495F /* XBAcFunMessageView.m in Sources */,
+				88AEBEDF1CF2DA94009E495F /* XBAcFunDownloadImageManager.m in Sources */,
+				88AEBEDA1CF2DA94009E495F /* UIImageView+XBAcFunExtension.m in Sources */,
+				88AEBEDE1CF2DA94009E495F /* XBAcFunDataController.m in Sources */,
 				88468A2E1CE338F0001F3AAA /* main.m in Sources */,
-				88468A711CE338FF001F3AAA /* UIColor+XBAcFunUIColorExtension.m in Sources */,
-				880D2E021CE5BE7500998C7D /* UIImageView+XBAcFunExtension.m in Sources */,
-				88468A721CE338FF001F3AAA /* UIView+XBAcFunUIViewExtension.m in Sources */,
-				88468A781CE338FF001F3AAA /* XBAcFunTouchAnimation.m in Sources */,
-				88468A751CE338FF001F3AAA /* XBAcFunDataController.m in Sources */,
+				88AEBEE21CF2DA94009E495F /* XBAcFunTouchAnimation.m in Sources */,
+				88AEBEDD1CF2DA94009E495F /* XBAcFunAcSubView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

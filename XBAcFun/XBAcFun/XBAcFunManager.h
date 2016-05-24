@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "XBAcFunCommon.h"
 
+/**
+ *  delegates to make diversity
+ *  'customTouchAcFunViewBehaviour' and 'customAcFunSubViewTouchAction:touches:withEvent' can be used at same time
+ */
 @protocol XBAcFunManagerDelegate <NSObject>
 
 /**
@@ -30,12 +34,20 @@
 
 /**
  *  the custom behaviour when you touch the acfunsubview which is displaying
+ *  this will be called every time you touch the acfun sub view if you want to mark the touch action you should use this method
  *  if you set the custom view the method is useless and you should override the touchbegin method in your custom view
  */
 - (void)customTouchAcFunViewBehaviour:(XBAcFunAcItem *)acfunItem;
 
 /**
- *  if you want to download the avatar by your own function , plz use this delegate 
+ *  you can edit your own touch action when the acfun sub view is touched
+ *  defaultly I display love icon when you touch the acfun sub view 
+ *  so if you want to change the animation you should override this method
+ */
+- (void)customAcFunSubViewTouchAction:(XBAcFunAcItem *)acfunItem touches:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
+
+/**
+ *  if you want to download the avatar by your own function , plz use this delegate
  *  and call 'succeed' , when download the avator succeed
  *  call 'fail' , when download the avator fail
  */
@@ -58,6 +70,8 @@
 @property (copy, nonatomic) void (^customAcFunAvatorDownloadBlock)(XBAcFunAcItem * acfunItem,void (^succeed)(void),void (^fail)(void));
 
 @property (copy, nonatomic) TouchAcFunBlock touchAcFunBlock;
+
+@property (copy, nonatomic) TouchAcFunCommonBlock touchAcFunCommonBlock;
 
 /**
  *  if you want to change the origin.y of the acfun while tha acfun is in showing

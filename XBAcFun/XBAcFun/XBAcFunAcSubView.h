@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "XBAcFunCommon.h"
 
+@class XBAcFunManager;
+
 @interface XBAcFunAcSubView : UIView
 
 @property (strong, nonatomic) XBAcFunAcItem * acFunItem;
 
-@property (copy, nonatomic) TouchAcFunBlock touchAcFunBlock;
+@property (weak, nonatomic) XBAcFunManager * acfunManager;
 
 - (instancetype)initWithAcItem:(XBAcFunAcItem *)acItem;
 
