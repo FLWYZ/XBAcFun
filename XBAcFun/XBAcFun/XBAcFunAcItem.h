@@ -9,7 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 @class XBAcFunAcItem;
-typedef void(^TouchAcFunBlock)(XBAcFunAcItem * acfunItem);
+/**
+ *  to edit the custom touch action by block
+ */
+typedef void(^TouchAcFunBlock)(XBAcFunAcItem * acfunItem,NSSet<UITouch *> *touches,UIEvent * event);
+
+/**
+ *  to mark the touch action if you want to
+ */
+typedef void(^TouchAcFunCommonBlock)(XBAcFunAcItem * acfunItem);
 
 typedef NSInteger XBAcFunCurve;
 

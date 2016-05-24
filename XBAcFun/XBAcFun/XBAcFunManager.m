@@ -166,7 +166,7 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
                         }
                     }
                 }else{
-                    if (view.x <= -view.width) {
+                    if (view.x <= UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).origin.x - view.width) {
                         if (self.customAcfunDisappearBehaviourBlock) {
                             self.customAcfunDisappearBehaviourBlock(acFunItem,view);
                         }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
@@ -177,7 +177,7 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
                         [self.acFunItemArray removeObject:view];
                     }else{
                         view.y = self.currentBaseOriginY + acFunItem.startPoint.y;
-                        view.x -= (view.width + kScreenWidth) / (acFunItem.timeDuration * 60.0);
+                        view.x -= (view.width + UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).size.width) / (acFunItem.timeDuration * 60.0);
                     }
                 }
                 if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
@@ -200,17 +200,9 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
             objc_setAssociatedObject(acfunSubView, &kAcFunItemKey, acFunItem, OBJC_ASSOCIATION_RETAIN);
         }else{
             XBAcFunAcSubView * subView = [[XBAcFunAcSubView alloc]initWithAcItem:acFunItem];
-            if (self.touchAcFunBlock) {
-                subView.touchAcFunBlock = self.touchAcFunBlock;
-            }else if ([self.delegate respondsToSelector:@selector(customTouchAcFunViewBehaviour:)]){
-                __weak typeof(self) weakself = self;
-                subView.touchAcFunBlock = ^(XBAcFunAcItem * acfunItem){
-                    [weakself.delegate customTouchAcFunViewBehaviour:acFunItem];
-                };
-            }
+            subView.acfunManager = self;
             acfunSubView = subView;
         }
-        
         if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed) {
             acfunSubView.alpha = 0.0;
             acfunSubView.layer.zPosition = -1;

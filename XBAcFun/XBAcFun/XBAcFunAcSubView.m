@@ -43,20 +43,26 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    UITouch * touch = [touches anyObject];
-    CGPoint location = [touch locationInView:self];
-    
-    CGPoint startPoint = CGPointMake(location.x + self.origin.x, self.origin.y - 10);
-    [self.superview.layer addSublayer:[XBAcFunTouchAnimation createAnimationAtPoint:startPoint]];
-    
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    if (self.acFunItem.acFunBgColorType != XBAcFunBgColorType_Top) {
-        self.acFunItem.acFunBgColorType = XBAcFunBgColorType_Top;
-        self.backgroundColor = [[UIColor colorWithRGBHex:XBAcFunBgColorType_Top]colorWithAlphaComponent:0.85];
+    if (self.acfunManager.touchAcFunBlock) {
+        self.acfunManager.touchAcFunBlock(self.acFunItem,touches,event);
+    }else if([self.acfunManager.delegate respondsToSelector:@selector(customAcFunSubViewTouchAction:touches:withEvent:)]){
+        [self.acfunManager.delegate customAcFunSubViewTouchAction:self.acFunItem touches:touches withEvent:event];
+    }else{
+        UITouch * touch = [touches anyObject];
+        CGPoint location = [touch locationInView:self];
+        CGPoint startPoint = CGPointMake(location.x + self.origin.x, self.origin.y - 10);
+        [self.superview.layer addSublayer:[XBAcFunTouchAnimation createAnimationAtPoint:startPoint]];
+        if (self.acFunItem.acFunBgColorType != XBAcFunBgColorType_Top) {
+            self.acFunItem.acFunBgColorType = XBAcFunBgColorType_Top;
+            self.backgroundColor = [[UIColor colorWithRGBHex:XBAcFunBgColorType_Top]colorWithAlphaComponent:0.85];
+        }
     }
-    if (self.touchAcFunBlock) {
-        self.touchAcFunBlock(self.acFunItem);
+    if (self.acfunManager.touchAcFunCommonBlock) {
+        self.acfunManager.touchAcFunCommonBlock(self.acFunItem);
+    }else if ([self.acfunManager.delegate respondsToSelector:@selector(customTouchAcFunViewBehaviour:)]){
+        [self.acfunManager.delegate customTouchAcFunViewBehaviour:self.acFunItem];
     }
     dispatch_semaphore_signal(semaphore);
 }
