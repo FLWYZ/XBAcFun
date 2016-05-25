@@ -123,7 +123,7 @@
 
 - (instancetype)init{
     if (self = [super init]) {
-        self.numberOfLine(4).lineSpace(7).movingSpeedRate(4.2).privateAppearStrategy(XBAcFunPrivateAppearStrategy_Flutter_Top).lineHieght(20).verticalDirection(XBAcFunVerticalDirection_FromBottom).displayEdge(UIEdgeInsetsMake(20, 0, 20, kScreenWidth)).privateApearPoint(CGPointMake(0, 20));
+        self.numberOfLine(4).lineSpace(7).movingSpeedRate(4.2).privateAppearStrategy(XBAcFunPrivateAppearStrategy_Flutter_Top).lineHieght(20).verticalDirection(XBAcFunVerticalDirection_FromBottom).displayEdge(UIEdgeInsetsMake(20, 0, 20, 0)).privateApearPoint(CGPointMake(0, 20));
     }
     return self;
 }

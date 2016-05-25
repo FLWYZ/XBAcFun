@@ -52,8 +52,6 @@
  */
 @property (strong, nonatomic) NSMutableArray * acfunItemArray_FinishedDownloadImage;
 
-@property (copy, nonatomic) XBAcFunCustomParam * acfunCustomParams;
-
 /**
  *  just used when you choose XBAcFunPrivateAppearStrategy -> XBAcFunPrivateAppearStrategy_Flutter_Mix
  */
@@ -73,7 +71,6 @@
         self.avarageUpdateTimeInterval = timeInterval;
         self.sizeOfDownloadingImageArray = 20;
         self.acfunManager = acfunManager;
-        self.acfunCustomParams = acfunManager.acfunCustomParamMaker;
         self.displayArea = CGRectZero;
         self.shouldAutoDownloadAvator = YES;
         [self initAcFunTimeIntervalArray];
@@ -83,7 +80,7 @@
 
 - (BOOL)couldShowAcFun{
     BOOL couldShowAcFun = NO;
-    for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines; index++) {
+    for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         if ([self couldShowAcFunOnCurve:index autoUpdateTimeInterval:YES] == YES) {
             couldShowAcFun = YES;
             break;
@@ -138,7 +135,7 @@
 }
 
 - (void)updateAllCurveTimeInterval{
-    for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines; index++) {
+    for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         [self updateTimeIntervalOnCurve:index];
     }
 }
@@ -148,7 +145,7 @@
 }
 
 - (void)clearAllCurveTimeInterval{
-    for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines; index++) {
+    for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         [self clearTimeIntervalOnCurve:index];
     }
 }
@@ -180,7 +177,8 @@
             timeInterval.index++;
             timeInterval.lastAcFunWidth = item.contentWidth.floatValue;
             timeInterval.lastAcFunAnimationDuration = item.timeDuration;
-            if (self.acfunCustomParams.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Mix && onCurve == [self privateLaunchAcFunCurve]) {//in this situation , the curve of private acfun is random
+            if (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Mix &&
+                onCurve == [self privateLaunchAcFunCurve]) {//in this situation , the curve of private acfun is random
                 [self clearTimeIntervalOnCurve:self.randomCurve];
             }else{
                 [self clearTimeIntervalOnCurve:onCurve];
@@ -193,7 +191,7 @@
 }
 
 - (void)launchAllCurvesWithOperation:(OperationBlock)operation{
-    for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines; index++) {
+    for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         [self launchedOnCurve:index operation:operation];
     }
 }
@@ -353,7 +351,7 @@
 - (void)initAcFunTimeIntervalArray{
     _acFunTimeIntervalArray = nil;
     _acFunTimeIntervalArray = [NSMutableArray arrayWithCapacity:4];
-    for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines; index++) {
+    for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         XBAcFunTimeInterval * timeIntercal = [[XBAcFunTimeInterval alloc]init];
         timeIntercal.timeInterval = arc4random_uniform(1200) / 1000.0 + self.avarageUpdateTimeInterval * 10;
         [_acFunTimeIntervalArray addObject:timeIntercal];
@@ -364,15 +362,15 @@
     _acFunStartPointArray = nil;
     _acFunStartPointArray = [NSMutableArray arrayWithCapacity:4];
     
-    CGFloat topEdge = self.acfunCustomParams.acfunDisplayEdge.top;
-    CGFloat bottomEdge = self.acfunCustomParams.acfunDisplayEdge.bottom;
-    CGFloat trailingEdge = self.acfunCustomParams.acfunDisplayEdge.right;
+    CGFloat topEdge = self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge.top;
+    CGFloat bottomEdge = self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge.bottom;
+    CGFloat originX = CGRectGetMaxX(UIEdgeInsetsInsetRect(self.displayArea, self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge));
     CGFloat displayAreaHeight = CGRectGetHeight(self.displayArea);
-    CGFloat lineHeight = self.acfunCustomParams.acfunLineHeight;
-    CGFloat lineSpace = self.acfunCustomParams.acfunLineSpace;
+    CGFloat lineHeight = self.acfunManager.acfunCustomParamMaker.acfunLineHeight;
+    CGFloat lineSpace = self.acfunManager.acfunCustomParamMaker.acfunLineSpace;
     NSInteger extraPlus = 0;
     
-    switch (self.acfunCustomParams.acfunPrivateAppearStrategy) {
+    switch (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy) {
         case XBAcFunPrivateAppearStrategy_Flutter_Top:
         case XBAcFunPrivateAppearStrategy_Flutter_Bottom:
             extraPlus = 0;
@@ -385,46 +383,46 @@
             break;
     }
     
-    self.acfunCustomParams.numberOfLine(MIN(self.acfunCustomParams.acfunNumberOfLines, (NSInteger)(displayAreaHeight - topEdge - bottomEdge + lineSpace) / (1.0 * (lineHeight + lineSpace))) + extraPlus);
+    self.acfunManager.acfunCustomParamMaker.numberOfLine(MIN(self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines, (NSInteger)(displayAreaHeight - topEdge - bottomEdge + lineSpace) / (1.0 * (lineHeight + lineSpace))) + extraPlus);
     
-    for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines; index++) {
+    for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         /**
          *  XBAcFunPrivateAppearStrategy_Flutter_Mix
          *  XBAcFunPrivateAppearStrategy_Flutter_Fixed this two strategy is special
          *  in the two cases , there are (self.acfunCustomParams.acfunNumberOfLines - 1) lines to display
          *  because in the two cases , private acfun is displayed in the radom line or in the fixed area
          */
-        switch (self.acfunCustomParams.acfunVerticalDirection) {
+        switch (self.acfunManager.acfunCustomParamMaker.acfunVerticalDirection) {
             case XBAcFunVerticalDirection_FromTop:
-                switch (self.acfunCustomParams.acfunPrivateAppearStrategy) {
+                switch (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy) {
                     case XBAcFunPrivateAppearStrategy_Flutter_Top:
                         if (index == [self privateLaunchAcFunCurve]) {
-                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(trailingEdge, topEdge)]];
+                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, topEdge)]];
                         }else{
-                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(trailingEdge, topEdge + (lineHeight + lineSpace )* (index + 1))]];
+                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, topEdge + (lineHeight + lineSpace )* (index + 1))]];
                         }
                         break;
                     case XBAcFunPrivateAppearStrategy_Flutter_Bottom:
                     case XBAcFunPrivateAppearStrategy_Flutter_Mix:
                     case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
-                        [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(trailingEdge, topEdge + index * (lineHeight + lineSpace))]];
+                        [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, topEdge + index * (lineHeight + lineSpace))]];
                         break;
                     default:
                         break;
                 }
                 break;
             case XBAcFunVerticalDirection_FromBottom:
-                switch (self.acfunCustomParams.acfunPrivateAppearStrategy) {
+                switch (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy) {
                     case XBAcFunPrivateAppearStrategy_Flutter_Top:
                     case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
                     case XBAcFunPrivateAppearStrategy_Flutter_Mix:
-                        [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(trailingEdge, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight) * (index + 1))]];
+                        [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight) * (index + 1))]];
                         break;
                     case XBAcFunPrivateAppearStrategy_Flutter_Bottom:
                         if (index == [self privateLaunchAcFunCurve]) {
-                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(trailingEdge, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight))]];
+                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight))]];
                         }else{
-                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(trailingEdge, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight) * (index + 2))]];
+                            [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight) * (index + 2))]];
                         }
                         break;
                     default:
@@ -439,32 +437,33 @@
 }
 
 - (NSTimeInterval)animationDuration:(XBAcFunAcItem *)acfunItem{
-    CGFloat contentWidth = acfunItem.contentWidth.floatValue + kScreenWidth;
-    return (contentWidth / kScreenWidth + arc4random_uniform(100) / 1000.0) * self.acfunCustomParams.acfunMovingSpeedRate;
+    CGFloat distance = UIEdgeInsetsInsetRect(self.displayArea, self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge).size.width;
+    CGFloat contentWidth = acfunItem.contentWidth.floatValue + distance;
+    return (contentWidth / distance + arc4random_uniform(100) / 1000.0) * self.acfunManager.acfunCustomParamMaker.acfunMovingSpeedRate;
 }
 
 /**
  *  the private comment identifier
  */
 - (XBAcFunCurve)privateLaunchAcFunCurve{
-    return self.acfunCustomParams.acfunNumberOfLines - 1;
+    return self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines - 1;
 }
 
 - (CGPoint)startPointAtCurve:(XBAcFunCurve)aCurve{
     CGPoint startPoint = CGPointZero;
     if (aCurve == [self privateLaunchAcFunCurve]) {
-        switch (self.acfunCustomParams.acfunPrivateAppearStrategy) {
+        switch (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy) {
             case XBAcFunPrivateAppearStrategy_Flutter_Top:
             case XBAcFunPrivateAppearStrategy_Flutter_Bottom:
                 startPoint = ((NSValue *)self.acFunStartPointArray[aCurve]).CGPointValue;
                 break;
             case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
-                startPoint = self.acfunCustomParams.acfunPrivateApearPoint;
+                startPoint = self.acfunManager.acfunCustomParamMaker.acfunPrivateApearPoint;
                 break;
             case XBAcFunPrivateAppearStrategy_Flutter_Mix:
             {
                 NSMutableArray * tempArray = [NSMutableArray arrayWithCapacity:10];
-                for (NSInteger index = 0; index < self.acfunCustomParams.acfunNumberOfLines - 1; index++) {
+                for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines - 1; index++) {
                     if ([self couldShowAcFunOnCurve:index autoUpdateTimeInterval:NO] == YES) {
                         [tempArray addObject:@(index)];
                     }

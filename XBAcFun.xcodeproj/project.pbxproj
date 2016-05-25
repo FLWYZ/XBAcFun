@@ -27,6 +27,7 @@
 		88AEBEE01CF2DA94009E495F /* XBAcFunManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED41CF2DA94009E495F /* XBAcFunManager.m */; };
 		88AEBEE11CF2DA94009E495F /* XBAcFunMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED61CF2DA94009E495F /* XBAcFunMessageView.m */; };
 		88AEBEE21CF2DA94009E495F /* XBAcFunTouchAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 88AEBED81CF2DA94009E495F /* XBAcFunTouchAnimation.m */; };
+		88AEBFB21CF5399B009E495F /* AcFun_Love_Icon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 88AEBFB11CF5399B009E495F /* AcFun_Love_Icon.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		88AEBED61CF2DA94009E495F /* XBAcFunMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunMessageView.m; sourceTree = "<group>"; };
 		88AEBED71CF2DA94009E495F /* XBAcFunTouchAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBAcFunTouchAnimation.h; sourceTree = "<group>"; };
 		88AEBED81CF2DA94009E495F /* XBAcFunTouchAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBAcFunTouchAnimation.m; sourceTree = "<group>"; };
+		88AEBFB11CF5399B009E495F /* AcFun_Love_Icon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = AcFun_Love_Icon.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +185,7 @@
 		88AEBEC31CF2DA94009E495F /* XBAcFun */ = {
 			isa = PBXGroup;
 			children = (
+				88AEBFB11CF5399B009E495F /* AcFun_Love_Icon.pdf */,
 				88AEBEC41CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.h */,
 				88AEBEC51CF2DA94009E495F /* UIColor+XBAcFunUIColorExtension.m */,
 				88AEBEC61CF2DA94009E495F /* UIImageView+XBAcFunExtension.h */,
@@ -311,6 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88AEBFB21CF5399B009E495F /* AcFun_Love_Icon.pdf in Resources */,
 				880D2DFC1CE45ABF00998C7D /* Images.xcassets in Resources */,
 				88468A3C1CE338F0001F3AAA /* LaunchScreen.storyboard in Resources */,
 				88468A391CE338F0001F3AAA /* Assets.xcassets in Resources */,
