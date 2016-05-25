@@ -71,7 +71,7 @@
 - (IBAction)showPrivateAcFunAction {
     [self.view endEditing:YES];
     if (self.textField.text.length > 0) {
-        [self.acfunManager showPrivateAcFunComment:[self.textField.text copy] userAvatar:[UIImage imageNamed:@"appleIcon"]];
+        [self.acfunManager showPrivateAcFunComment:[self.textField.text copy] userAvatar:[UIImage imageNamed:@"AppleIcon"]];
         self.textField.text = @"";
     }
 }
@@ -85,11 +85,7 @@
     [UIView animateWithDuration:[[notify.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue] animations:^{
         self.blackMaskButton.alpha = 1.0;
         self.textFieldBaseBottomLayout.constant = CGRectGetHeight(targetRect);
-        
-        _acfunManager.currentBaseOriginY = - (CGRectGetHeight(targetRect) + 60 + 20);
-        
-        
-        
+        _acfunManager.currentBaseOriginY = - (CGRectGetHeight(targetRect) + 50);
         [self.view layoutSubviews];
     }];
 }
@@ -164,6 +160,7 @@
     if (_acfunManager == nil) {
         _acfunManager = [[XBAcFunManager alloc]init];
         _acfunManager.belowView = self.blackMaskButton;
+        _acfunManager.acfunCustomParamMaker.privateAppearStrategy(XBAcFunPrivateAppearStrategy_Flutter_Mix);
     }
     return _acfunManager;
 }
