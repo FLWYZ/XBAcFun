@@ -157,12 +157,13 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
                         }else{
                             [view removeFromSuperview];
                         }
+                        [self.acFunItemArray removeObject:view];
                     }else{
                         acFunItem.displayedDuration += kUpdateTimeInterval;
                         if (acFunItem.displayedDuration < acFunItem.timeDuration / 2.0) {
-                            view.alpha += 2 * kUpdateTimeInterval;
+                            view.alpha = acFunItem.displayedDuration * 2/ acFunItem.timeDuration;
                         }else{
-                            view.alpha -= 2 * kUpdateTimeInterval;
+                            view.alpha = (acFunItem.timeDuration - acFunItem.displayedDuration) * 2 / acFunItem.timeDuration;
                         }
                     }
                 }else{
@@ -203,9 +204,9 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
             subView.acfunManager = self;
             acfunSubView = subView;
         }
-        if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed) {
+        if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed &&
+            acFunItem.isPrivateComment == YES) {
             acfunSubView.alpha = 0.0;
-            acfunSubView.layer.zPosition = -1;
         }
         [self.acFunBaseView addSubview:acfunSubView];
         acfunSubView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;

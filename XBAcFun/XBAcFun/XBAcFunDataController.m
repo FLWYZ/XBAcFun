@@ -353,9 +353,14 @@
         timeInterval.passedTimeInterval += self.avarageUpdateTimeInterval;
     }else{
         timeInterval.passedTimeInterval = 0;
-        CGFloat animationSpeed = floor((timeInterval.lastAcFunWidth + kScreenWidth) / timeInterval.lastAcFunAnimationDuration);
-        CGFloat newDistance = (timeInterval.lastAcFunWidth + 25.0 + arc4random_uniform(500) / 100.0);
-        timeInterval.timeInterval = newDistance / animationSpeed;
+        if (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed &&
+            aCurve == [self privateLaunchAcFunCurve]) {
+            timeInterval.timeInterval = timeInterval.lastAcFunAnimationDuration;
+        }else{
+            CGFloat animationSpeed = floor((timeInterval.lastAcFunWidth + kScreenWidth) / timeInterval.lastAcFunAnimationDuration);
+            CGFloat newDistance = (timeInterval.lastAcFunWidth + 25.0 + arc4random_uniform(500) / 100.0);
+            timeInterval.timeInterval = newDistance / animationSpeed;
+        }
     }
     dispatch_semaphore_signal(semaphore_t);
 }
@@ -473,7 +478,7 @@
                 startPoint = ((NSValue *)self.acFunStartPointArray[aCurve]).CGPointValue;
                 break;
             case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
-                startPoint = self.acfunManager.acfunCustomParamMaker.acfunPrivateApearPoint;
+                startPoint = CGPointMake(self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge.left + self.acfunManager.acfunCustomParamMaker.acfunPrivateApearPoint.x, self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge.top + self.acfunManager.acfunCustomParamMaker.acfunPrivateApearPoint.y) ;
                 break;
             default:
                 break;

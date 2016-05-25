@@ -160,7 +160,7 @@
     if (_acfunManager == nil) {
         _acfunManager = [[XBAcFunManager alloc]init];
         _acfunManager.belowView = self.blackMaskButton;
-        _acfunManager.acfunCustomParamMaker.privateAppearStrategy(XBAcFunPrivateAppearStrategy_Flutter_Mix);
+        _acfunManager.acfunCustomParamMaker.privateAppearStrategy(XBAcFunPrivateAppearStrategy_Flutter_Fixed).numberOfLine(7).privateApearPoint(CGPointMake(40, 80));
     }
     return _acfunManager;
 }
