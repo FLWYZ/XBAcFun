@@ -78,7 +78,7 @@
         self.acfunManager = acfunManager;
         self.shouldAutoDownloadAvator = YES;
         self.downloadImageTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(0, 0));
-        dispatch_source_set_timer(self.downloadImageTimer, DISPATCH_TIME_NOW, (timeInterval / 2.0) * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
+        dispatch_source_set_timer(self.downloadImageTimer, DISPATCH_TIME_NOW, (1 / 100.0) * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
         dispatch_source_set_event_handler(self.downloadImageTimer, ^{
             [self bringAcFunItemToDownloadingArray];
         });
@@ -275,7 +275,7 @@
 #pragma mark - private method
 
 - (void)bringAcFunItemToDownloadingArray{
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         
