@@ -71,9 +71,7 @@
         self.avarageUpdateTimeInterval = timeInterval;
         self.sizeOfDownloadingImageArray = 20;
         self.acfunManager = acfunManager;
-        self.displayArea = CGRectZero;
         self.shouldAutoDownloadAvator = YES;
-        [self initAcFunTimeIntervalArray];
     }
     return self;
 }
@@ -161,30 +159,44 @@
         XBAcFunTimeInterval * timeInterval = self.acFunTimeIntervalArray[onCurve];
         XBAcFunAcItem * item = nil;
         if (onCurve == self.privateLaunchAcFunCurve) {// private comment
-            item = [NSArray arrayWithArray:self.acFunItemArray_PrivateComment][timeInterval.index];
+            item = self.acFunItemArray_PrivateComment[timeInterval.index];
         }else{
             NSInteger launchIndex = [self numberOfDisplayedNetworkAcFunItem];
             if (self.acfunItemArray_FinishedDownloadImage.count > launchIndex) {
                 item = [self.acfunItemArray_FinishedDownloadImage[launchIndex] copy];
-                item.acFunCurve = onCurve;
             }
-            item.startPoint = [self startPointAtCurve:onCurve];
         }
         if (item != nil) {
-            if (operation) {
-                operation(item);
-            }
-            timeInterval.index++;
-            timeInterval.lastAcFunWidth = item.contentWidth.floatValue;
-            timeInterval.lastAcFunAnimationDuration = item.timeDuration;
+            BOOL couldLaunch = YES;
             if (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Mix &&
-                onCurve == [self privateLaunchAcFunCurve]) {//in this situation , the curve of private acfun is random
-                [self clearTimeIntervalOnCurve:self.randomCurve];
-            }else{
-                [self clearTimeIntervalOnCurve:onCurve];
+                onCurve == [self privateLaunchAcFunCurve]){
+                onCurve = self.randomCurve;
+                if (![self couldShowAcFunOnCurve:onCurve autoUpdateTimeInterval:NO]) {
+                    item.acFunCurve = onCurve;
+                    item.startPoint = [self startPointAtCurve:onCurve];
+                    [self.acfunItemArray_FinishedDownloadImage insertObject:item atIndex:[self numberOfDisplayedNetworkAcFunItem]];
+                    [self.acFunItemArray_PrivateComment removeObject:item];
+                    couldLaunch = NO;
+                }
             }
-            item.timeDuration = [self animationDuration:item];
-            item.isFirstTimeDisplay = NO;
+            if (couldLaunch == YES) {
+                item.acFunCurve = onCurve;
+                item.startPoint = [self startPointAtCurve:onCurve];
+                if (operation) {
+                    operation(item);
+                }
+                timeInterval.index++;
+                timeInterval.lastAcFunWidth = item.contentWidth.floatValue;
+                timeInterval.lastAcFunAnimationDuration = item.timeDuration;
+                if (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Mix &&
+                    onCurve == [self privateLaunchAcFunCurve]) {//in this situation , the curve of private acfun is random
+                    [self clearTimeIntervalOnCurve:self.randomCurve];
+                }else{
+                    [self clearTimeIntervalOnCurve:onCurve];
+                }
+                item.timeDuration = [self animationDuration:item];
+                item.isFirstTimeDisplay = NO;
+            }
         }
     }
     dispatch_semaphore_signal(semaphore_t);
@@ -353,7 +365,7 @@
     _acFunTimeIntervalArray = [NSMutableArray arrayWithCapacity:4];
     for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         XBAcFunTimeInterval * timeIntercal = [[XBAcFunTimeInterval alloc]init];
-        timeIntercal.timeInterval = arc4random_uniform(1200) / 1000.0 + self.avarageUpdateTimeInterval * 10;
+        timeIntercal.timeInterval = arc4random_uniform(900) / 1000.0 + self.avarageUpdateTimeInterval * 10;
         [_acFunTimeIntervalArray addObject:timeIntercal];
     }
 }
@@ -378,12 +390,12 @@
         case XBAcFunPrivateAppearStrategy_Flutter_Mix:
         case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
             extraPlus = 1;
-            break;
         default:
             break;
     }
     
-    self.acfunManager.acfunCustomParamMaker.numberOfLine(MIN(self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines, (NSInteger)(displayAreaHeight - topEdge - bottomEdge + lineSpace) / (1.0 * (lineHeight + lineSpace))) + extraPlus);
+    self.acfunManager.acfunCustomParamMaker.numberOfLine(MIN(self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines + extraPlus, floor(extraPlus + (displayAreaHeight - topEdge - bottomEdge + lineSpace) / (1.0 * (lineHeight + lineSpace)))));
+    [self initAcFunTimeIntervalArray];
     
     for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines; index++) {
         /**
@@ -416,7 +428,10 @@
                     case XBAcFunPrivateAppearStrategy_Flutter_Top:
                     case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
                     case XBAcFunPrivateAppearStrategy_Flutter_Mix:
-                        [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, displayAreaHeight - (bottomEdge - lineSpace) - (lineSpace + lineHeight) * (index + 1))]];
+                    {
+                        CGRect displayRect = UIEdgeInsetsInsetRect(self.displayArea, self.acfunManager.acfunCustomParamMaker.acfunDisplayEdge);
+                        [_acFunStartPointArray addObject:[NSValue valueWithCGPoint:CGPointMake(originX, displayRect.origin.y + displayRect.size.height - index * (lineSpace + lineHeight) - lineHeight)]];
+                    }
                         break;
                     case XBAcFunPrivateAppearStrategy_Flutter_Bottom:
                         if (index == [self privateLaunchAcFunCurve]) {
@@ -433,7 +448,6 @@
                 break;
         }
     }
-    
 }
 
 - (NSTimeInterval)animationDuration:(XBAcFunAcItem *)acfunItem{
@@ -455,23 +469,11 @@
         switch (self.acfunManager.acfunCustomParamMaker.acfunPrivateAppearStrategy) {
             case XBAcFunPrivateAppearStrategy_Flutter_Top:
             case XBAcFunPrivateAppearStrategy_Flutter_Bottom:
+            case XBAcFunPrivateAppearStrategy_Flutter_Mix:
                 startPoint = ((NSValue *)self.acFunStartPointArray[aCurve]).CGPointValue;
                 break;
             case XBAcFunPrivateAppearStrategy_Flutter_Fixed:
                 startPoint = self.acfunManager.acfunCustomParamMaker.acfunPrivateApearPoint;
-                break;
-            case XBAcFunPrivateAppearStrategy_Flutter_Mix:
-            {
-                NSMutableArray * tempArray = [NSMutableArray arrayWithCapacity:10];
-                for (NSInteger index = 0; index < self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines - 1; index++) {
-                    if ([self couldShowAcFunOnCurve:index autoUpdateTimeInterval:NO] == YES) {
-                        [tempArray addObject:@(index)];
-                    }
-                }
-                NSInteger randomIndex = arc4random_uniform((u_int32_t)tempArray.count);
-                self.randomCurve = [tempArray[randomIndex] integerValue];
-                startPoint= [self.acFunStartPointArray[self.randomCurve] CGPointValue];
-            }
                 break;
             default:
                 break;
@@ -515,6 +517,10 @@
 - (void)setDisplayArea:(CGRect)displayArea{
     _displayArea = displayArea;
     [self initAcFunStartPointArray];
+}
+
+- (XBAcFunCurve)randomCurve{
+    return arc4random_uniform((unsigned int)self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines);
 }
 
 @end
