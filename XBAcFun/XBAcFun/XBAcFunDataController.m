@@ -77,7 +77,7 @@
         self.sizeOfDownloadingImageArray = 20;
         self.acfunManager = acfunManager;
         self.shouldAutoDownloadAvator = YES;
-        self.downloadImageTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(0, 0));
+        self.downloadImageTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
         dispatch_source_set_timer(self.downloadImageTimer, DISPATCH_TIME_NOW, (1 / 100.0) * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
         dispatch_source_set_event_handler(self.downloadImageTimer, ^{
             [self bringAcFunItemToDownloadingArray];
@@ -275,71 +275,69 @@
 #pragma mark - private method
 
 - (void)bringAcFunItemToDownloadingArray{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-        
-        if ((self.acfunManager.hasLoadAllAcfun == YES && self.acFunItemArray_WaitDownloadImage.count == 0) ||
-            self.shouldAutoDownloadAvator == NO) {
-            dispatch_cancel(self.downloadImageTimer);
-            self.downloadImageTimer = nil;
-        }
-        else{
-            NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
-            buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
-            void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
-                [self.acfunItemArray_FinishedDownloadImage addObject:item];
-                [self.acfunItemArray_InDownloadingImage removeObject:item];
-            };
-            void (^failBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
-                item.imageDownloadTimes++;
-                [self.acFunItemArray_WaitDownloadImage addObject:item];
-            };
-            if (buffer > 0) {
-                NSRange range = NSMakeRange(0, buffer);
-                NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
-                [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
-                [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
-                for (XBAcFunAcItem * item in subArray) {
-                    if (self.shouldAutoDownloadAvator == NO) {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    
+    if ((self.acfunManager.hasLoadAllAcfun == YES && self.acFunItemArray_WaitDownloadImage.count == 0) ||
+        self.shouldAutoDownloadAvator == NO) {
+        dispatch_cancel(self.downloadImageTimer);
+        self.downloadImageTimer = nil;
+    }
+    else{
+        NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
+        buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
+        void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
+            [self.acfunItemArray_FinishedDownloadImage addObject:item];
+            [self.acfunItemArray_InDownloadingImage removeObject:item];
+        };
+        void (^failBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
+            item.imageDownloadTimes++;
+            [self.acFunItemArray_WaitDownloadImage addObject:item];
+        };
+        if (buffer > 0) {
+            NSRange range = NSMakeRange(0, buffer);
+            NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
+            [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
+            [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
+            for (XBAcFunAcItem * item in subArray) {
+                if (self.shouldAutoDownloadAvator == NO) {
+                    operationBlock(item);
+                }else{
+                    if (item.posterAvatarImage != nil) {
                         operationBlock(item);
-                    }else{
-                        if (item.posterAvatarImage != nil) {
+                    }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]) {
+                        if (item.imageDownloadTimes > 2) {
                             operationBlock(item);
-                        }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]) {
-                            if (item.imageDownloadTimes > 2) {
-                                operationBlock(item);
-                            }else{
-                                if (self.acfunManager.customAcFunAvatorDownloadBlock != nil) {
-                                    self.acfunManager.customAcFunAvatorDownloadBlock(item,^{
-                                        operationBlock(item);
-                                    },^{
-                                        failBlock(item);
-                                    });
-                                }
-                                else if ([self.acfunManager.delegate respondsToSelector:@selector(customAcFunAvatorDownload:succeedBlock:failBlock:)]) {
-                                    [self.acfunManager.delegate customAcFunAvatorDownload:item succeedBlock:^{
-                                        operationBlock(item);
-                                    } failBlock:^{
-                                        failBlock(item);
-                                    }];
-                                }else{
-                                    [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                                        operationBlock(item);
-                                    } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                                        failBlock(item);
-                                    }];
-                                }
-                            }
                         }else{
-                            operationBlock(item);
+                            if (self.acfunManager.customAcFunAvatorDownloadBlock != nil) {
+                                self.acfunManager.customAcFunAvatorDownloadBlock(item,^{
+                                    operationBlock(item);
+                                },^{
+                                    failBlock(item);
+                                });
+                            }
+                            else if ([self.acfunManager.delegate respondsToSelector:@selector(customAcFunAvatorDownload:succeedBlock:failBlock:)]) {
+                                [self.acfunManager.delegate customAcFunAvatorDownload:item succeedBlock:^{
+                                    operationBlock(item);
+                                } failBlock:^{
+                                    failBlock(item);
+                                }];
+                            }else{
+                                [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                                    operationBlock(item);
+                                } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
+                                    failBlock(item);
+                                }];
+                            }
                         }
+                    }else{
+                        operationBlock(item);
                     }
                 }
             }
         }
-        dispatch_semaphore_signal(semaphore);
-    });
+    }
+    dispatch_semaphore_signal(semaphore);
 }
 
 /**
