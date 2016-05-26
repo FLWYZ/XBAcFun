@@ -117,75 +117,71 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
 
 #pragma mark - private method
 - (void)startTimer{
-    self.acFunTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    self.acFunTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(self.acFunTimer, DISPATCH_TIME_NOW, kUpdateTimeInterval * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
     dispatch_source_set_event_handler(self.acFunTimer, ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.dataController.isShowingAcFun) {
-                [self stopAcFunTimer];
-            }else if ([self.dataController acFunIsReady]) {
-                self.dataController.isShowingAcFun = YES;
-                [self.dataController launchAllCurvesWithOperation:^(XBAcFunAcItem *item) {
-                    [self addAcFunItemIntoAnimationQueue:item];
-                }];
-            }
-        });
+        if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.dataController.isShowingAcFun) {
+            [self stopAcFunTimer];
+        }else if ([self.dataController acFunIsReady]) {
+            self.dataController.isShowingAcFun = YES;
+            [self.dataController launchAllCurvesWithOperation:^(XBAcFunAcItem *item) {
+                [self addAcFunItemIntoAnimationQueue:item];
+            }];
+        }
     });
     dispatch_resume(self.acFunTimer);
 }
 
 - (void)startAnimationTimer{
-    self.acFunAnimationTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+    self.acFunAnimationTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(self.acFunAnimationTimer, DISPATCH_TIME_NOW, kUpdateTimeInterval * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
     dispatch_source_set_event_handler(self.acFunAnimationTimer, ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            for (NSInteger index = self.acFunItemArray.count - 1; index >= 0; index--) {
-                XBAcFunAcItem * acFunItem = nil;
-                UIView * view = self.acFunItemArray[index];
-                if ([view isKindOfClass:[XBAcFunAcSubView class]]) {
-                    acFunItem = ((XBAcFunAcSubView *)view).acFunItem;
-                }else{
-                    acFunItem = objc_getAssociatedObject(view, &kAcFunItemKey);
-                }
-                if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed &&
-                    acFunItem.isPrivateComment == YES) {
-                    if (acFunItem.displayedDuration >= acFunItem.timeDuration) {
-                        if (self.customAcfunDisappearBehaviourBlock) {
-                            self.customAcfunDisappearBehaviourBlock(acFunItem,view);
-                        }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
-                            [self.delegate customAcfunDisappearBehaviour:acFunItem acfunView:view];
-                        }else{
-                            [view removeFromSuperview];
-                        }
-                        [self.acFunItemArray removeObject:view];
+        for (NSInteger index = self.acFunItemArray.count - 1; index >= 0; index--) {
+            XBAcFunAcItem * acFunItem = nil;
+            UIView * view = self.acFunItemArray[index];
+            if ([view isKindOfClass:[XBAcFunAcSubView class]]) {
+                acFunItem = ((XBAcFunAcSubView *)view).acFunItem;
+            }else{
+                acFunItem = objc_getAssociatedObject(view, &kAcFunItemKey);
+            }
+            if (self.acfunCustomParamMaker.acfunPrivateAppearStrategy == XBAcFunPrivateAppearStrategy_Flutter_Fixed &&
+                acFunItem.isPrivateComment == YES) {
+                if (acFunItem.displayedDuration >= acFunItem.timeDuration) {
+                    if (self.customAcfunDisappearBehaviourBlock) {
+                        self.customAcfunDisappearBehaviourBlock(acFunItem,view);
+                    }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
+                        [self.delegate customAcfunDisappearBehaviour:acFunItem acfunView:view];
                     }else{
-                        acFunItem.displayedDuration += kUpdateTimeInterval;
-                        if (acFunItem.displayedDuration < acFunItem.timeDuration / 2.0) {
-                            view.alpha = acFunItem.displayedDuration * 2/ acFunItem.timeDuration;
-                        }else{
-                            view.alpha = (acFunItem.timeDuration - acFunItem.displayedDuration) * 2 / acFunItem.timeDuration;
-                        }
+                        [view removeFromSuperview];
                     }
+                    [self.acFunItemArray removeObject:view];
                 }else{
-                    if (view.x <= UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).origin.x - view.width) {
-                        if (self.customAcfunDisappearBehaviourBlock) {
-                            self.customAcfunDisappearBehaviourBlock(acFunItem,view);
-                        }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
-                            [self.delegate customAcfunDisappearBehaviour:acFunItem acfunView:view];
-                        }else{
-                            [view removeFromSuperview];
-                        }
-                        [self.acFunItemArray removeObject:view];
+                    acFunItem.displayedDuration += kUpdateTimeInterval;
+                    if (acFunItem.displayedDuration < acFunItem.timeDuration / 2.0) {
+                        view.alpha = acFunItem.displayedDuration * 2/ acFunItem.timeDuration;
                     }else{
-                        view.y = self.currentBaseOriginY + acFunItem.startPoint.y;
-                        view.x -= (view.width + UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).size.width) / (acFunItem.timeDuration * 60.0);
+                        view.alpha = (acFunItem.timeDuration - acFunItem.displayedDuration) * 2 / acFunItem.timeDuration;
                     }
                 }
-                if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
-                    [self stopAcFunAnimationTimer];
+            }else{
+                if (view.x <= UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).origin.x - view.width) {
+                    if (self.customAcfunDisappearBehaviourBlock) {
+                        self.customAcfunDisappearBehaviourBlock(acFunItem,view);
+                    }else if ([self.delegate respondsToSelector:@selector(customAcfunDisappearBehaviour:acfunView:)]) {
+                        [self.delegate customAcfunDisappearBehaviour:acFunItem acfunView:view];
+                    }else{
+                        [view removeFromSuperview];
+                    }
+                    [self.acFunItemArray removeObject:view];
+                }else{
+                    view.y = self.currentBaseOriginY + acFunItem.startPoint.y;
+                    view.x -= (view.width + UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).size.width) / (acFunItem.timeDuration * 60.0);
                 }
             }
-        });
+            if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {
+                [self stopAcFunAnimationTimer];
+            }
+        }
     });
     dispatch_resume(self.acFunAnimationTimer);
 }

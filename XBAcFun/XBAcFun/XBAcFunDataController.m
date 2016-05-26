@@ -77,8 +77,8 @@
         self.sizeOfDownloadingImageArray = 20;
         self.acfunManager = acfunManager;
         self.shouldAutoDownloadAvator = YES;
-        self.downloadImageTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(0, 0));
-        dispatch_source_set_timer(self.downloadImageTimer, DISPATCH_TIME_NOW, timeInterval * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
+        self.downloadImageTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+        dispatch_source_set_timer(self.downloadImageTimer, DISPATCH_TIME_NOW, (1 / 100.0) * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
         dispatch_source_set_event_handler(self.downloadImageTimer, ^{
             [self bringAcFunItemToDownloadingArray];
         });
@@ -184,7 +184,6 @@
                 onCurve = self.randomCurve;
                 if (![self couldShowAcFunOnCurve:onCurve autoUpdateTimeInterval:NO]) {
                     item.acFunCurve = onCurve;
-                    item.startPoint = [self startPointAtCurve:onCurve];
                     [self.acfunItemArray_FinishedDownloadImage insertObject:item atIndex:[self numberOfDisplayedNetworkAcFunItem]];
                     [self.acFunItemArray_PrivateComment removeObject:item];
                     couldLaunch = NO;
@@ -290,7 +289,6 @@
         void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
             [self.acfunItemArray_FinishedDownloadImage addObject:item];
             [self.acfunItemArray_InDownloadingImage removeObject:item];
-            [self bringAcFunItemToDownloadingArray];
         };
         void (^failBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
             item.imageDownloadTimes++;
@@ -544,7 +542,7 @@
 }
 
 - (XBAcFunCurve)randomCurve{
-    return arc4random_uniform((unsigned int)self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines);
+    return arc4random_uniform((unsigned int)self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines - 1);
 }
 
 @end
