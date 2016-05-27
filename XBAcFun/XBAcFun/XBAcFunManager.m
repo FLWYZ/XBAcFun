@@ -12,7 +12,7 @@
 static BOOL isOpenAcFun = YES;
 static const char * kAcFunItemKey = "kAcFunItemKey";
 
-#define kUpdateTimeInterval 1.0/60.0
+#define kUpdateTimeInterval 1.0/30.0
 
 @interface XBAcFunManager()
 @property (strong, nonatomic) XBAcFunDataController * dataController;
@@ -175,7 +175,7 @@ static const char * kAcFunItemKey = "kAcFunItemKey";
                     [self.acFunItemArray removeObject:view];
                 }else{
                     view.y = self.currentBaseOriginY + acFunItem.startPoint.y;
-                    view.x -= (view.width + UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).size.width) / (acFunItem.timeDuration * 60.0);
+                    view.x -= (view.width + UIEdgeInsetsInsetRect(self.acFunBaseView.bounds, self.acfunCustomParamMaker.acfunDisplayEdge).size.width) / acFunItem.timeDuration * kUpdateTimeInterval;
                 }
             }
             if ([self.dataController hasShowAllAcFuns] && self.hasLoadAllAcfun && self.acFunItemArray.count <= 0) {

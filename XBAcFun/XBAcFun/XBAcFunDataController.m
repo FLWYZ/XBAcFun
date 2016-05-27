@@ -22,11 +22,6 @@
 
 @property (strong, nonatomic) NSMutableArray * acFunStartPointArray;
 
-/**
- *  to check whether there are undownload images in the waitdownarray
- */
-@property (strong, nonatomic) dispatch_source_t downloadImageTimer;
-
 /*
  since the total comment is increating while downloading the comment from the network 
  so I need four arrays
@@ -64,6 +59,8 @@
 
 @property (weak, nonatomic) XBAcFunManager * acfunManager;
 
+@property (strong, nonatomic) dispatch_queue_t downloadImageQueue;
+
 @end
 
 @implementation XBAcFunDataController
@@ -77,12 +74,6 @@
         self.sizeOfDownloadingImageArray = 20;
         self.acfunManager = acfunManager;
         self.shouldAutoDownloadAvator = YES;
-        self.downloadImageTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-        dispatch_source_set_timer(self.downloadImageTimer, DISPATCH_TIME_NOW, (1 / 100.0) * NSEC_PER_SEC, 0.0001 * NSEC_PER_SEC);
-        dispatch_source_set_event_handler(self.downloadImageTimer, ^{
-            [self bringAcFunItemToDownloadingArray];
-        });
-        dispatch_resume(self.downloadImageTimer);
     }
     return self;
 }
@@ -219,14 +210,15 @@
 }
 
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> *)comments{
-    self.numberOfNetworkComments += comments.count;
-    for (NSInteger index = 0 ; index < comments.count ; index++) {
-        XBAcFunAcItem * item = comments[index];
-        item.timeDuration = [self animationDuration:item];
-        [self.acFunItemArray_WaitDownloadImage addObject:item];
-    }
+    dispatch_async(self.downloadImageQueue, ^{
+        self.numberOfNetworkComments += comments.count;
+        for (XBAcFunAcItem * item in comments) {
+            item.timeDuration = [self animationDuration:item];
+            [self.acFunItemArray_WaitDownloadImage addObject:item];
+        }
+    });
     if (self.acfunItemArray_InDownloadingImage.count == 0) {
-        [self bringAcFunItemToDownloadingArray];
+        [self bringAcFunItemToDownloadingArray:nil error:nil];
     }
 }
 
@@ -274,59 +266,62 @@
 
 #pragma mark - private method
 
-- (void)bringAcFunItemToDownloadingArray{
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    
-    if ((self.acfunManager.hasLoadAllAcfun == YES && self.acFunItemArray_WaitDownloadImage.count == 0) ||
-        self.shouldAutoDownloadAvator == NO) {
-        dispatch_cancel(self.downloadImageTimer);
-        self.downloadImageTimer = nil;
-    }
-    else{
+- (void)bringAcFunItemToDownloadingArray:(XBAcFunAcItem *)acfunItem error:(NSError *)error{
+    dispatch_async(self.downloadImageQueue, ^{
+        if (acfunItem != nil) {
+            if (error == nil) {
+                [self.acfunItemArray_FinishedDownloadImage addObject:acfunItem];
+            }else{
+                [self.acFunItemArray_WaitDownloadImage addObject:acfunItem];
+            }
+            [self.acfunItemArray_InDownloadingImage removeObject:acfunItem];
+        }
         NSInteger buffer = self.sizeOfDownloadingImageArray - self.acfunItemArray_InDownloadingImage.count;
-        buffer = self.acFunItemArray_WaitDownloadImage.count >= buffer ? buffer : self.acFunItemArray_WaitDownloadImage.count;
-        void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
-            [self.acfunItemArray_FinishedDownloadImage addObject:item];
-            [self.acfunItemArray_InDownloadingImage removeObject:item];
-        };
-        void (^failBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
-            item.imageDownloadTimes++;
-            [self.acFunItemArray_WaitDownloadImage addObject:item];
-        };
+        buffer = buffer > self.acFunItemArray_WaitDownloadImage.count ? self.acFunItemArray_WaitDownloadImage.count : buffer;
+        
         if (buffer > 0) {
             NSRange range = NSMakeRange(0, buffer);
             NSArray * subArray = [self.acFunItemArray_WaitDownloadImage subarrayWithRange:range];
             [self.acfunItemArray_InDownloadingImage addObjectsFromArray:subArray];
             [self.acFunItemArray_WaitDownloadImage removeObjectsInArray:subArray];
+            
+            void (^operationBlock)(XBAcFunAcItem * item) = ^(XBAcFunAcItem * item){
+                [self bringAcFunItemToDownloadingArray:item error:nil];
+            };
+            
+            void (^failBlock)(XBAcFunAcItem * item,NSError * error) = ^(XBAcFunAcItem * item, NSError * error){
+                [self bringAcFunItemToDownloadingArray:item error:error];
+            };
+            
             for (XBAcFunAcItem * item in subArray) {
                 if (self.shouldAutoDownloadAvator == NO) {
                     operationBlock(item);
                 }else{
                     if (item.posterAvatarImage != nil) {
                         operationBlock(item);
-                    }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]) {
-                        if (item.imageDownloadTimes > 2) {
+                    }else if (item.posterAvatar != nil && ![item.posterAvatar isEqualToString:@""]){
+                        if (item.posterAvatarImage != nil) {
                             operationBlock(item);
                         }else{
                             if (self.acfunManager.customAcFunAvatorDownloadBlock != nil) {
                                 self.acfunManager.customAcFunAvatorDownloadBlock(item,^{
                                     operationBlock(item);
                                 },^{
-                                    failBlock(item);
+                                    item.imageDownloadTimes++;
+                                    failBlock(item,[[NSError alloc] init]);
                                 });
-                            }
-                            else if ([self.acfunManager.delegate respondsToSelector:@selector(customAcFunAvatorDownload:succeedBlock:failBlock:)]) {
+                            }else if ([self.acfunManager.delegate respondsToSelector:@selector(customAcFunAvatorDownload:succeedBlock:failBlock:)]) {
                                 [self.acfunManager.delegate customAcFunAvatorDownload:item succeedBlock:^{
                                     operationBlock(item);
                                 } failBlock:^{
-                                    failBlock(item);
+                                    item.imageDownloadTimes++;
+                                    failBlock(item,[[NSError alloc] init]);
                                 }];
                             }else{
                                 [[XBAcFunDownloadImageManager shareManager]downloadAcFunImageByAcFunItem:item withSucceedBlock:^(UIImage *downloadImage, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
                                     operationBlock(item);
                                 } withFailBlock:^(NSError *error, NSURL *imageUrl, XBAcFunAcItem *originalItem) {
-                                    failBlock(item);
+                                    failBlock(item,error);
                                 }];
                             }
                         }
@@ -336,8 +331,7 @@
                 }
             }
         }
-    }
-    dispatch_semaphore_signal(semaphore);
+    });
 }
 
 /**
@@ -543,6 +537,13 @@
 
 - (XBAcFunCurve)randomCurve{
     return arc4random_uniform((unsigned int)self.acfunManager.acfunCustomParamMaker.acfunNumberOfLines - 1);
+}
+
+- (dispatch_queue_t)downloadImageQueue{
+    if (_downloadImageQueue == nil) {
+        _downloadImageQueue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
+    }
+    return _downloadImageQueue;
 }
 
 @end

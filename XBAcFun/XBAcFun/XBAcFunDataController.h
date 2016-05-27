@@ -28,6 +28,11 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 - (instancetype)initWithAvarageUpdateTime:(NSTimeInterval)timeInterval
                          withAcFunManager:(XBAcFunManager *)acfunManager;
 
+/**
+ *  将评论模型数组转化为 AcFunItem
+ */
++ (NSArray<XBAcFunAcItem *> *)acFunItemsFromArticleCommets:(NSArray *)commentList;
+
 - (void)creatAcFunItems:(NSArray<XBAcFunAcItem *> * )comments;
 
 - (void)resetConditions;
@@ -60,11 +65,6 @@ typedef void(^OperationBlock)(XBAcFunAcItem * item);
 - (void)launchedOnCurve:(XBAcFunCurve)onCurve operation:(OperationBlock)operation;
 
 - (void)launchAllCurvesWithOperation:(OperationBlock)operation;
-
-/**
- *  将评论模型数组转化为 AcFunItem
- */
-+ (NSArray<XBAcFunAcItem *> *)acFunItemsFromArticleCommets:(NSArray *)commentList;
 
 /**
  *  用户本人发送的评论
