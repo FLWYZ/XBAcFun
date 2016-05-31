@@ -21,7 +21,12 @@
  *  the acfunItem has param —— isPrivateComment , isFirstTimeDisplay, so you can do the different treatment
  *  important important —— the custom view you set must be the 
  */
-- (UIView *)customAcFunSubView:(XBAcFunAcItem *)acfunItem;
+- (void)customAcFunView:(UIView *)customView bindAcFunItem:(XBAcFunAcItem *)acfunItem;
+
+/**
+ *  give the custom acfun sub view class so I can create the sub view for reuse
+ */
+- (Class)classOfCustomAcFunSubView;
 
 /**
  *  defaultly I just remove the acfun subview when the acfun is disappeared 
@@ -63,7 +68,9 @@
  */
 @property (weak, nonatomic) id<XBAcFunManagerDelegate> delegate;
 
-@property (copy, nonatomic) UIView * (^customAcFunSubViewBlock) (XBAcFunAcItem * acfunItem);
+@property (copy, nonatomic) void (^customAcFunBindAcFunItemBlock)(UIView * customView,XBAcFunAcItem * acfunItem);
+
+@property (copy, nonatomic) Class (^classOfCustomAcFunSubViewBlock)(void);
 
 @property (copy, nonatomic) void (^customAcfunDisappearBehaviourBlock)(XBAcFunAcItem * acfunItem,UIView * acfunView);
 
